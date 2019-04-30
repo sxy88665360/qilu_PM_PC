@@ -37,7 +37,7 @@
                     <!-- <span class="text">立项部门</span> -->
                     <div class="searchInput ">
                         <!-- <el-input v-model="searchCondition.projectStatus"  size="small" placeholder="项目状态" ></el-input> -->
-                        <el-select v-model="value" placeholder="项目状态" size="small">
+                        <el-select v-model="projectStatus" placeholder="项目状态" size="small">
                             <el-option v-for="item in projectStatus" :key="item.value" :label="item.label" :value="item.value" ></el-option>
                         </el-select>
                     </div>
@@ -133,10 +133,12 @@
 import Treeselect from '@riophae/vue-treeselect'
 // import the styles
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import * as Urls from '@/components/url'
 export default {
     components: { Treeselect },
     data() {
         return {
+            dataUrl: Urls.dataUrl,
             value: null,
             searchCondition: {
                 number:'', // 项目编号
@@ -190,9 +192,9 @@ export default {
             // });           
             var that = this;                                    
             this.axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
-            this.axios.post('http://127.0.0.1:3000/projectApi/findAll',data)
+            this.axios.post(this.dataUrl+'/projectApi/findAll',data)
             .then(function (response) {
-                console.log(response.data.data);
+                // console.log(response.data.data);
                 if(response.data.code === 1){
                     var data = response.data.data
                     // data.forEach((item, index) => {
@@ -201,7 +203,7 @@ export default {
                     console.log(data,"data");
                     that.tableData = data;
                 }
-            },this)
+            })
             .catch(function (error) {
                 console.log(error);
             });

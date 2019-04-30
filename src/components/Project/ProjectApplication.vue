@@ -15,47 +15,47 @@
             </div>
             <div class="formList">
                 <span class="text">项目类别：</span>
-                <el-radio v-model="projectForm.type" label="1">改造项目</el-radio>
-                <el-radio v-model="projectForm.type" label="2">工艺革新项目</el-radio>
-                <el-radio v-model="projectForm.type" label="3">天和（乐陵）重点工作项目</el-radio>
-                <el-radio v-model="projectForm.type" label="4">申请政府奖补资金及专项税免项目</el-radio>
-                <el-radio v-model="projectForm.type" label="5">专利申请</el-radio>
-                <el-radio v-model="projectForm.type" label="6">其他项目</el-radio>
+                <el-radio v-model="projectForm.category" label="1">改造项目</el-radio>
+                <el-radio v-model="projectForm.category" label="2">工艺革新项目</el-radio>
+                <el-radio v-model="projectForm.category" label="3">天和（乐陵）重点工作项目</el-radio>
+                <el-radio v-model="projectForm.category" label="4">申请政府奖补资金及专项税免项目</el-radio>
+                <el-radio v-model="projectForm.category" label="5">专利申请</el-radio>
+                <el-radio v-model="projectForm.category" label="6">其他项目</el-radio>
             </div>
             <div class="formList">
                 <span class="text">计划投资总额：</span>
-                <el-input v-model="projectForm.name" class="listStyle"  size="small" placeholder="请输入计划投资总额" ></el-input>
+                <el-input v-model="projectForm.totalInvestment" class="listStyle"  size="small" placeholder="请输入计划投资总额" ></el-input>
             </div>            
             <div class="formList">
                 <span class="text">预期收益：</span>
-                <el-input v-model="projectForm.name" class="listStyle"  size="small" placeholder="请输入预期收益" ></el-input>
+                <el-input v-model="projectForm.expectedReturn" class="listStyle"  size="small" placeholder="请输入预期收益" ></el-input>
             </div>
             <div class="formList">
                 <span class="text">项目背景：</span>
-                <el-input v-model="projectForm.name" class="listStyle"  size="small" placeholder="请输入项目背景" ></el-input>
+                <el-input v-model="projectForm.backGround" class="listStyle"  size="small" placeholder="请输入项目背景" ></el-input>
             </div>
             <div class="formList">
                 <span class="text">项目目标：</span>
-                <el-input v-model="projectForm.name" class="listStyle"  size="small" placeholder="请输入项目目标" ></el-input>
+                <el-input v-model="projectForm.target" class="listStyle"  size="small" placeholder="请输入项目目标" ></el-input>
             </div>
             <div class="formList">
                 <span class="text">项目经理：</span>
-                <el-input v-model="projectForm.name" class="listStyle"  size="small" placeholder="请输入项目经理" ></el-input>
+                <el-input v-model="projectForm.manager" class="listStyle"  size="small" placeholder="请输入项目经理" ></el-input>
             </div>
             <div class="formList">
                 <span class="text">核心人员：</span>
-                <el-input v-model="projectForm.name" class="listStyle"  size="small" placeholder="请输入核心人员" ></el-input>
+                <el-input v-model="projectForm.corePersonnel" class="listStyle"  size="small" placeholder="请输入核心人员" ></el-input>
             </div>
             <div class="formList">
                 <span class="text">主要人员：</span>
-                <el-input v-model="projectForm.name" class="listStyle"  size="small" placeholder="请输入主要人员" ></el-input>
+                <el-input v-model="projectForm.keyPersonnel" class="listStyle"  size="small" placeholder="请输入主要人员" ></el-input>
             </div>
             <div class="formList">
                 <span class="text">申请人：</span>
-                <el-input v-model="projectForm.name" class="listStyle"  size="small" placeholder="请输入申请人" ></el-input>
+                <el-input v-model="projectForm.proposer" class="listStyle"  size="small" placeholder="请输入申请人" ></el-input>
             </div>
             <div class="searchBtn">
-                <el-button type="primary" size="medium" class="Btn_2" @click="searchList">新增</el-button>
+                <el-button type="primary" size="medium" class="Btn_2" @click="addProjectList">新增</el-button>
             </div>
             <div class="searchBtn">
                 <el-button  class="Btn_2" size="medium" @click="resetList">取消</el-button>
@@ -70,14 +70,32 @@
 import Treeselect from '@riophae/vue-treeselect'
 // import the styles
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import * as Urls from '@/components/url'
 export default {
     components: { Treeselect },
     data() {
         return {
+            dataUrl: Urls.dataUrl,
             value: null,
             projectForm:{
-                name: '',
-                type: null,
+                number:'', // 项目编号
+                name:'', // 项目名称
+                category: null,// 项目类别
+                totalInvestment:'', // 计划投资总额
+                backGround:'', // 项目背景
+                time:'', // 立项时间
+                target: '', // 项目目标
+                deadline: null,//完成期限
+                expectedReturn: null, // 预期收益
+                manager:'', // 项目经理
+                corePersonnel: "",// 核心成员
+                keyPersonnel:"",// 主要成员
+                corePersonnelArr: null,// 核心成员
+                keyPersonnelArr: null,// 主要成员
+                progress:"", // 项目进度
+                department:'', // 立项部门
+                proposer:'', // 申请人
+                projectStatus:null, // 项目状态
             },
             options: [ {
                 id: 'a',
@@ -103,8 +121,20 @@ export default {
         resetList(){
 
         },
-        searchList(){
+        addProjectList(){
+            var that = this;
+            var data = this.projectForm;
+            data.department = this.value[0];
+            console.log(data,"projectForm");
+            this.axios.post(this.dataUrl+'/projectApi/new', data)
+            .then((response) => {
+                 if(response.data.code === 1) {
 
+                 }
+
+            }).catch( (err) => {
+                console.log(err)
+            })
         }
     }
 }
