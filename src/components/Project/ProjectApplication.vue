@@ -131,7 +131,6 @@ export default {
                  if(response.data.code === 1) {
 
                  }
-
             }).catch( (err) => {
                 console.log(err)
             })

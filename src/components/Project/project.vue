@@ -52,7 +52,7 @@
                 <div class="clear"></div>
             </div>
         </header>
-        <div class="tableList">
+        <div class="tableList"> 
              <el-table
                 :data="tableData"
                 border
@@ -119,7 +119,7 @@
                 label="操作"
                 width="100">
                 <template slot-scope="scope">
-                    <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
+                    <el-button @click="handleClick(scope.row._id)" type="text" size="small">查看</el-button>
                     <el-button @click="projectSchedule(scope.row)" type="text" size="small">提交进度</el-button>
                     <el-button type="text" size="small">编辑</el-button>
                 </template>
@@ -185,13 +185,18 @@ export default {
         this.searchList();
     },
     methods:{
+        handleClick(itemId) {
+            // console.log(itemId,"itemId");
+            this.$router.push({ path: '/projectApplication', query: { itemId: itemId }}); 
+        },
         searchList() {
             var data = this.searchCondition;
             // data.array.forEach(element => {
             //     // if(element)
             // });           
             var that = this;                                    
-            this.axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
+            this.axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'; 
+            // axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';  
             this.axios.post(this.dataUrl+'/projectApi/findAll',data)
             .then(function (response) {
                 // console.log(response.data.data);
