@@ -1,7 +1,7 @@
 <template>
     <div class="projectApplication">
         <header>
-            <p>项目申请——新增</p>
+            <p>{{isView?"查看项目":"项目申请——新增"}}</p>
         </header>
         <!-- <div class="title">项目申请——新增</div> -->   
         <div class="content">
@@ -54,7 +54,7 @@
                 <span class="text">申请人：</span>
                 <el-input v-model="projectForm.proposer" class="listStyle"  size="small" placeholder="请输入申请人" ></el-input>
             </div>
-            <div class="searchBtn">
+            <div class="searchBtn" v-if = !isView>
                 <el-button type="primary" size="medium" class="Btn_2" @click="addProjectList">新增</el-button>
             </div>
             <div class="searchBtn">
@@ -75,6 +75,8 @@ export default {
     components: { Treeselect },
     data() {
         return {
+            isEdit:false,
+            isView:false,
             dataUrl: Urls.dataUrl,
             value: null,
             projectForm:{
@@ -117,15 +119,27 @@ export default {
 
         }
     },
+    mounted () {
+        if(this.$route.query.itemId){ //
+            this.isView = true;
+            var data = this.$route.query.itemId;
+            this.projectForm = data;
+            // console.log(data,this.projectForm,"处于编辑状态");
+            // console.log(this.projectForm,"projectForm")
+        }else{
+            this.isView = false;
+        }
+    },
     methods: {
         resetList(){
-
+            //this.$router.go(-1);
+            this.$router.push({path:"/"}); // 返回首页
         },
         addProjectList(){
             var that = this;
             var data = this.projectForm;
-            data.department = this.value[0];
-            console.log(data,"projectForm");
+            data.department = this.value[0]? this.value[0]: "";
+            // console.log(data,"projectForm");
             this.axios.post(this.dataUrl+'/projectApi/new', data)
             .then((response) => {
                  if(response.data.code === 1) {
