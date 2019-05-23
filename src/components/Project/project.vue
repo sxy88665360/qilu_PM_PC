@@ -138,6 +138,9 @@ export default {
     components: { Treeselect },
     data() {
         return {
+            currentPage:1,
+            pageSize: 10,
+            total: 0,
             dataUrl: Urls.dataUrl,
             value: null,
             searchCondition: {
@@ -197,7 +200,7 @@ export default {
             var that = this;                                    
             this.axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'; 
             // axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';  
-            this.axios.post(this.dataUrl+'/projectApi/findAll',data)
+            this.axios.post(this.dataUrl+`/projectApi/findAll?pageSize=${this.pageSize}&&pageNun=${this.currentPage}`,data)
             .then(function (response) {
                 // console.log(response.data.data);
                 if(response.data.code === 1){
