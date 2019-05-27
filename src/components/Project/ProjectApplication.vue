@@ -138,12 +138,18 @@ export default {
         addProjectList(){
             var that = this;
             var data = this.projectForm;
-            data.department = this.value[0]? this.value[0]: "";
+            // data.department = this.value[0]? this.value[0]: "";
             // console.log(data,"projectForm");
             this.axios.post(this.dataUrl+'/projectApi/new', data)
             .then((response) => {
                  if(response.data.code === 1) {
-
+                     // element 弹出
+                     // 跳转页面
+                    that.$message({
+                        message: '项目提交成功',
+                        type: 'success'
+                    });
+                    that.$router.push({path:"/"}); // 返回首页
                  }
             }).catch( (err) => {
                 console.log(err)
