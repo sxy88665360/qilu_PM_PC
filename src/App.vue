@@ -42,4 +42,13 @@ a{
 .project .searchItemTwo .vue-treeselect__control{
   height: 32px;
 }
+/* 客服管理 */
+.userSettings .el-form-item__content .el-form-item__error {
+  width: 120px;
+  margin-left:25px;
+  margin-top:-10px;
+  position: absolute;
+  top: 20% ;
+  transform: translateX(120px);
+}
 </style>
