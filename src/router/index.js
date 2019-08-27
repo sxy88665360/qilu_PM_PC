@@ -6,6 +6,7 @@ import Project from '@/components/Project/project'
 import ProjectApplication from '@/components/Project/ProjectApplication'
 import ProjectSchedule from '@/components/Project/ProjectSchedule'
 import UserSettings from '@/components/UserSettings/userSettings'
+import Login from '@/components/Login'
 Vue.use(Router)
 
 export default new Router({
@@ -37,6 +38,11 @@ export default new Router({
           path: '/userSettings',
           name: 'UserSettings',
           component: UserSettings
+        },
+        {
+          path: '/login',
+          name: 'Login',
+          component: Login
         }
       ]
     }

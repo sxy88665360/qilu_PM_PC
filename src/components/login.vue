@@ -21,7 +21,7 @@
                   trigger="hover"
                   content="超级管理员专用，其他角色联系超级管理员修改密码">
                 </el-popover>
-                <el-button v-popover:popover1 class="forgetPwd"><a href="http://www.one.cn/forgetcode.html">忘记密码</a></el-button>
+                <!-- <el-button v-popover:popover1 class="forgetPwd"><a href="http://www.one.cn/forgetcode.html">忘记密码</a></el-button> -->
               <!--   <a href="http://www.one.cn/forgetcode.html" @ class="forgetPwd">忘记密码</a> -->
             </div>
             <button class="btn" @click="login" @keydown.enter="add">登录</button>
@@ -31,7 +31,7 @@
 
 <script>
     import axios from 'axios'
-    import * as Urls from  "@/components/urls/index"
+    import * as Urls from '@/components/url'
     import md5 from 'js-md5'
     axios.defaults.withCredentials = true
     export default{
@@ -41,7 +41,7 @@
                 psd: '',
                 checked:false,
                 domain: '',
-                basicUrl: Urls.baseUrl,
+                basicUrl: Urls.dataUrl,
             }
         },
         methods: {
@@ -114,6 +114,7 @@
 
 <style scoped lang="scss">
     .loginBox{
+        position: fixed;
         width:100%;
         height:100%;
         background: url(/static/assets/dl_bj.jpg) no-repeat;
