@@ -2,9 +2,25 @@
   <div id="app">
     <!-- <img src="./assets/logo.png"> -->
     <header>
-
+      <div class='userName'>
+        <img :src="imgbaseUrl+'jlsz01.png'"/>
+        {{userName}}
+        <!-- <span class="drop_down"></span> -->
+        <span style="cursor:pointer;"  class="log login" @click="login">登录</span>
+        <span style="cursor:pointer;" class="log logout">退出</span>
+      </div>
+      <!-- <div class="userName" @click.stop="showState">
+        <img :src="basicURL+'dh_gq.png'" v-if="status == 3">
+        <img :src="basicURL+'dh_zx.png'" v-else-if="status == 2">
+        {{userName}}
+        <span></span>
+        <ul class="loginState" v-show="stateIsShow">
+          <li v-for="(item,index) in loginState" :key="index" @click="choseState(index)"><img :src="basicURL+item.src">{{item.state}}</li>
+        </ul>
+      </div> -->
     </header>
-    <div class="head-top"></div>
+    <div class="head-top">
+    </div>
     <div class="main-box clear">
       <div class="left-nav">
         <ul class="navList">
@@ -31,7 +47,34 @@
       </div>
       <div class="clear"></div>
     </div>
-    
+     <div class="loginFlag" v-if='loginFlag'>
+        <div class="boom">
+            <div class="top"><span class="delete">用户登录</span><a href="javascript:;" class="close"><span @click="close">×</span></a>
+            </div>
+            <div class="inner">
+                <el-form ref="login_msg" :model="login_msg" label-width="120px" class="demo-ruleForm">
+                    <div class="loginMsg orderModityPublic">
+                        <el-form-item label="用户名" prop="login_name">
+                          <div class="orderInput">
+                              <el-input type="text" v-model="login_msg.login_name" auto-complete="off"></el-input>
+                          </div>
+                        </el-form-item>
+                    </div>
+                    <div class="loginMsg orderModityPublic">
+                        <el-form-item label="密码" prop="login_passWord">
+                          <div class="orderInput">
+                              <el-input type="text" v-model="login_msg.login_passWord" auto-complete="off"></el-input>
+                          </div>
+                        </el-form-item>
+                    </div>
+                </el-form>
+                <div class="input orderModityPublicBtn">
+                    <el-button type="primary" @click="LoginForm()" class="chooseTrue">登录</el-button>
+                    <el-button @click="LogoutForm()">取消</el-button> 
+                </div>
+            </div>
+        </div>
+      </div>
     <!-- <router-view/> -->
   </div>
 </template>
@@ -41,6 +84,12 @@ export default {
   name: 'App',
   data () {
     return {
+      login_msg:{
+        login_name:'',
+        login_passWord:null,
+      },
+      loginFlag: false,
+      userName:'',
       currentIndex:0,
       isOpen: true,
       imgbaseUrl: '/static/assets/dh-',
@@ -53,6 +102,18 @@ export default {
     }
   },
   methods: {
+    LoginForm(){
+
+    },
+    LogoutForm(){
+
+    },
+    close(){
+      this.loginFlag = false;
+    },
+    login(){
+      this.loginFlag = true; 
+    },
     choose(index) {
       if (this.currentIndex == index) {
         this.isOpen = !this.isOpen
@@ -108,6 +169,30 @@ a{
     top:0;
     left:0;
     z-index: 100;
+    .userName{
+      float:right;
+      margin:20px 60px;
+      img{
+        display:inline-block;
+      }
+      .log{
+        display:inline-block;
+        margin:0 10px;
+        font-size:16px;
+        color:#fff;
+      }
+      .log:hover{
+        
+      }
+      // span{
+      //     display: inline-block;
+      //     float:right;
+      //     width: 10px;
+      //     height:10px;
+      //     background: url(/static/assets/user_name.png) no-repeat center;
+      //     margin:4px 30px 0 20px;
+      //   }
+    }
   }
   .head-top{
       width:100%;
@@ -198,6 +283,68 @@ a{
       background: #e7ebee;
       box-shadow: 0 0 2px 0 rgba(0,0,0,.2);
     }
+  }
+  // 登录
+  .loginFlag{
+    height:100%; width:100%; position:absolute; _position:absolute; top:0; z-index:10000;
+    background-color: rgba(0,0,0,0.5); filter: alpha(opacity=30);
+    .boom{
+            position: fixed;
+            width:420px;
+            height: 200px;
+            margin: auto;
+            top: 0;bottom: 0;left:0;right: 0;
+            background-color:#ffffff;
+            border:1px solid #999999;
+            font-size: 14px;
+            color: #999999;
+            border-radius: 5px;
+            .loginMsg{
+              .el-form-item {
+                  margin-bottom: 10px;
+              }
+            }
+            & .top{
+                height: 40px;
+                background: #ebf8f7;
+                line-height: 40px;
+                color: #000;
+                border-radius: 5px 5px 0 0;
+                border-bottom: 1px solid #CCCCCC;
+                & .delete{
+                padding-left: 22px;
+                vertical-align: middle;
+                color: #999;
+                font-weight: bold;
+                }
+                & .close{
+                vertical-align: middle;
+                font-size: 25px;
+                padding-left: 300px;
+                text-decoration:none;
+                color: #999;
+                }
+            }
+            & .orderModityPublic{
+                padding: 5px;
+                padding-left: 22px;
+                height: 40px;
+                //line-height: 50px;
+                //background: #ffffff;
+                border-bottom: 1px solid #CCCCCC;
+                & .orderInput{
+                width: 180px;
+                display:inline-block;
+                margin-left:0px；
+                }  
+            }
+            & .orderModityPublicBtn{
+                margin-top: 10px;
+                & .chooseTrue{
+                margin: 0 64px 10px 100px;
+                }
+            }
+        }
   }
 }
 </style>
