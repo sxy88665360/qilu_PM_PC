@@ -100,22 +100,69 @@ export default {
                 projectStatus:null, // 项目状态
             },
             options: [ {
-                id: 'a',
+                id: '1',
                 label:'生产系统',
                 children: [ {
-                    id: 'aa',
+                    id: '1-1',
+                    parentId:1,
                     label: '101车间',
                 }, {
-                    id: 'ab',
+                    id: '1_2',
+                    parentId:1,
                     label: '102车间',
+                }, {
+                    id: '1_3',
+                    parentId:1,
+                    label: '104车间',
+                }, {
+                    id: '1_4',
+                    parentId:1,
+                    label: '201车间',
+                }, {
+                    id: '1_5',
+                    parentId:1,
+                    label: '401车间',
+                }, {
+                    id: '1_6',
+                    parentId:1,
+                    label: '402车间',
+                }, {
+                    id: '1_7',
+                    parentId:1,
+                    label: '仓库',
+                }, {
+                    id: '1_8',
+                    parentId:1,
+                    label: '设备',
+                    children: [
+                        {
+                            id: '1_8_1',
+                            parentId:1,
+                            label: '设备处',
+                        }, {
+                            id: '1_8_2',
+                            parentId:1,
+                            label: '自控',
+                        }
+                    ]
                 } ],
                 }, {
-                id: 'b',
-                label: 'b',
+                id: '2',
+                parentId:null,
+                label: 'QA',
                 }, {
-                id: 'c',
-                label: 'c',
-            } ],
+                id: '3',
+                parentId:null,
+                label: 'QC',
+            } ,{
+                id: '4',
+                parentId:null,
+                label:'SHE'
+            },{
+                id: '5',
+                parentId:null,
+                label:'运管管理'
+            }],
 
         }
     },
