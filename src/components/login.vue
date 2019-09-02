@@ -30,87 +30,85 @@
 </template>
 
 <script>
-    import axios from 'axios'
-    import * as Urls from '@/components/url'
-    import md5 from 'js-md5'
-    axios.defaults.withCredentials = true
-    export default{
-        data(){
-            return {
-                userName:'',
-                psd: '',
-                checked:false,
-                domain: '',
-                basicUrl: Urls.dataUrl,
-            }
-        },
-        methods: {
-            neverBack(){
-                window.history.forward(1)
-            },
-            getDimain(){
-                var _host = window.location.host;
-                this.domain = _host.split("//")[0].split(".")[0];
-            },
-            login(){
-                //console.log(this.userName,this.psd,this.checked)
-                if(this.userName == '' && this.psd == ''){
-                    this.$message({
-                      message: '账号,密码不能为空',
-                      type: 'warning'
-                    });
-                }else if(this.userName == ''){
-                    this.$message({
-                      message: '账号不能为空',
-                      type: 'warning'
-                    });
-                }else if(this.psd == ''){
-                    this.$message({
-                      message: '密码不能为空',
-                      type: 'warning'
-                    });
-                }
-                else{
-                    let md5Pwd = md5(this.psd)
-                    // let md5Pwd = this.psd
-                    console.log(this.userName,md5Pwd)
-                    axios.post(this.basicUrl + '/login?username='+this.userName+'&password='+md5Pwd+'&domain='+this.domain+'').then(function(response){
-                        console.log(response)
-                        if(response.data.code === 20004){
-                            // document.cookie="access_token="+ response.data.data.access_token+";expires="+response.data.data.expires_in
-                            sessionStorage.removeItem('currentIndex')
-                            window.location.href = '/'
-                          console.log(md5Pwd)
-                        }else if(response.data.code === 20001){
-                            this.$message({
-                              message: '账号不存在',
-                              type: 'warning'
-                            });
-                        }else if(response.data.code === 20002){
-                            this.$message({
-                              message: '账号或者密码错误',
-                              type: 'error'
-                            });
-                        }else if(response.data.code === 1102){
-                            this.$message({
-                              message: 'ip登录受限制',
-                              type: 'error'
-                            });
-                        }
-                    }.bind(this)).catch((err) =>{
-                        console.log(err)
-                        // window.location.href = '/'
-                    })
-                }
-            }
-        },
-        mounted: function(){
-            this.getDimain()
-            this.neverBack()
-        }
+import axios from 'axios'
+import * as Urls from '@/components/url'
+import md5 from 'js-md5'
+axios.defaults.withCredentials = true
+export default{
+  data () {
+    return {
+      userName: '',
+      psd: '',
+      checked: false,
+      domain: '',
+      basicUrl: Urls.dataUrl
     }
+  },
+  methods: {
+    neverBack () {
+      window.history.forward(1)
+    },
+    getDimain () {
+      var _host = window.location.host
+      this.domain = _host.split('//')[0].split('/')[0]
+    },
+    login () {
+    // console.log(this.userName,this.psd,this.checked)
+      if (this.userName === '' && this.psd === '') {
+        this.$message({
+          message: '账号,密码不能为空',
+          type: 'warning'
+        })
+      } else if (this.userName === '') {
+        this.$message({
+          message: '账号不能为空',
+          type: 'warning'
+        })
+      } else if (this.psd === '') {
+        this.$message({
+          message: '密码不能为空',
+          type: 'warning'
+        })
+      } else {
+        let md5Pwd = md5(this.psd)
+        // let md5Pwd = this.psd
+        console.log(this.userName, md5Pwd)
+        axios.post(this.basicUrl + '/login?username=' + this.userName + '&password=' + md5Pwd + '&domain=' + this.domain + '').then(function (response) {
+          console.log(response)
+          if (response.data.code === 20004) {
+            // document.cookie="access_token="+ response.data.data.access_token+";expires="+response.data.data.expires_in
+            sessionStorage.removeItem('currentIndex')
+            window.location.href = '/'
+            console.log(md5Pwd)
+          } else if (response.data.code === 20001) {
+            this.$message({
+              message: '账号不存在',
+              type: 'warning'
+            })
+          } else if (response.data.code === 20002) {
+            this.$message({
+              message: '账号或者密码错误',
+              type: 'error'
+            })
+          } else if (response.data.code === 1102) {
+            this.$message({
+              message: 'ip登录受限制',
+              type: 'error'
+            })
+          }
+        }.bind(this)).catch((err) => {
+          console.log(err)
+          // window.location.href = '/'
+        })
+      }
+    }
+  },
+  mounted: function () {
+    this.getDimain()
+    this.neverBack()
+  }
+}
 </script>
-
 
 <style scoped lang="scss">
     .loginBox{

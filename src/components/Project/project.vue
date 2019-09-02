@@ -42,7 +42,7 @@
                         </el-select>
                     </div>
                 </div>
-                
+
                 <div class="searchBtn">
                     <el-button type="primary" class="Btn" size="small" @click="searchList">搜索</el-button>
                 </div>
@@ -52,7 +52,7 @@
                 <div class="clear"></div>
             </div>
         </header>
-        <div class="tableList"> 
+        <div class="tableList">
              <el-table
                 :data="tableData"
                 border
@@ -190,16 +190,16 @@ export default {
     methods:{
         handleClick(itemId) {
             // console.log(itemId,"itemId");
-            this.$router.push({ path: '/projectApplication', query: { itemId: itemId }}); 
+            this.$router.push({ path: '/projectApplication', query: { itemId: itemId }});
         },
         searchList() {
             var data = this.searchCondition;
             // data.array.forEach(element => {
             //     // if(element)
-            // });           
-            var that = this;                                    
-            this.axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'; 
-            // axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';  
+            // });
+            var that = this;
+            this.axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
+            // axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
             this.axios.post(this.dataUrl+`/projectApi/findAll?pageSize=${this.pageSize}&&pageNun=${this.currentPage}`,data)
             .then(function (response) {
                 // console.log(response.data.data);
@@ -213,10 +213,10 @@ export default {
                 }
             })
             .catch(function (error) {
-                console.log(error);
-            });
+                console.log(error)
+            })
         },
-        resetList() {
+        resetList () {
             this.searchCondition = {
                 number:'',//项目编号
                 projectName:'',//项目名称
@@ -226,7 +226,7 @@ export default {
             }
         },
         projectSchedule(){
-            
+
         }
     }
 }
