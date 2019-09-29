@@ -70,7 +70,7 @@
                 </el-form>
                 <div class="input orderModityPublicBtn">
                     <el-button type="primary" @click="LoginForm()" class="chooseTrue">登录</el-button>
-                    <el-button @click="LogoutForm()">取消</el-button> 
+                    <el-button @click="LogoutForm()">取消</el-button>
                 </div>
             </div>
         </div>
@@ -84,46 +84,55 @@ export default {
   name: 'App',
   data () {
     return {
-      login_msg:{
-        login_name:'',
-        login_passWord:null,
+      login_msg: {
+        login_name: '',
+        login_passWord: null
       },
       loginFlag: false,
-      userName:'',
-      currentIndex:0,
+      userName: '',
+      currentIndex: 0,
       isOpen: true,
       imgbaseUrl: '/static/assets/dh-',
       navList: [
-        {name: '立项项目', route: '/',img:'jlsz01', imgActive:'jlsz02', subList: [
-          {name: '申请项目', route: '/projectApplication',img:'jlsz01', imgActive:'jlsz02', subList: []}
-        ]},
-        {name: '用户设置',route: '/userSettings', img:'khzx01', imgActive:'khzx02',  subList: [],}
+        {
+          name: '立项项目',
+          route: '/',
+          img: 'jlsz01',
+          imgActive: 'jlsz02',
+          subList: [{
+            name: '申请项目', route: '/projectApplication', img: 'jlsz01', imgActive: 'jlsz02', subList: []}
+          ]
+        },
+        {
+          name: '用户设置', route: '/userSettings', img: 'khzx01', imgActive: 'khzx02', subList: []
+        }
       ]
     }
   },
   methods: {
-    LoginForm(){
+    LoginForm () {
 
     },
-    LogoutForm(){
+    LogoutForm () {
 
     },
-    close(){
-      this.loginFlag = false;
+    close () {
+      this.loginFlag = false
     },
-    login(){
-      this.loginFlag = true; 
+    login () {
+      // this.loginFlag = true
+      this.$router.push({path: '/login'})
     },
-    choose(index) {
-      if (this.currentIndex == index) {
+    choose (index) {
+      if (this.currentIndex === index) {
         this.isOpen = !this.isOpen
       }
       this.currentIndex = index
-      sessionStorage.setItem('currentIndex',this.currentIndex);
+      sessionStorage.setItem('currentIndex', this.currentIndex)
     },
-    scrtop(){
-        document.body.scrollTop=0
-        document.documentElement.scrollTop=0;
+    scrtop () {
+      document.body.scrollTop = 0
+      document.documentElement.scrollTop = 0
     }
   }
 }
@@ -182,7 +191,7 @@ a{
         color:#fff;
       }
       .log:hover{
-        
+
       }
       // span{
       //     display: inline-block;
@@ -335,8 +344,8 @@ a{
                 & .orderInput{
                 width: 180px;
                 display:inline-block;
-                margin-left:0px；
-                }  
+                margin-left:0px;
+                }
             }
             & .orderModityPublicBtn{
                 margin-top: 10px;

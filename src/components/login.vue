@@ -51,6 +51,7 @@ export default{
     getDimain () {
       var _host = window.location.host
       this.domain = _host.split('//')[0].split('/')[0]
+      // console.log("domain", this.domain)
     },
     login () {
     // console.log(this.userName,this.psd,this.checked)
@@ -79,7 +80,7 @@ export default{
             // document.cookie="access_token="+ response.data.data.access_token+";expires="+response.data.data.expires_in
             sessionStorage.removeItem('currentIndex')
             window.location.href = '/'
-            console.log(md5Pwd)
+            // console.log(md5Pwd)
           } else if (response.data.code === 20001) {
             this.$message({
               message: '账号不存在',
