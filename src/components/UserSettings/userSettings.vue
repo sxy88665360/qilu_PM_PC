@@ -46,7 +46,7 @@
                         </el-select>
                     </div>
                 </div>
-            </div>  
+            </div>
             <div class="search">
                 <div class="addUserBtn Btn">
                     <el-button type="primary" size="small" class="addUserB" :disabled="packageType === 1 ? true : false" @click="addNewUsers">新增用户</el-button>
@@ -65,7 +65,6 @@
                 border
                 style="width: 100%">
                 <el-table-column
-                
                 prop="loginName"
                 label="账号"
                 >
@@ -73,8 +72,8 @@
                 <!-- <el-table-column
                 prop="nickName"
                 label="昵称"
-                > -->
-                </el-table-column>
+                >
+                </el-table-column>-->
                 <el-table-column
                 prop="realName"
                 label="真实姓名"
@@ -127,7 +126,7 @@
                 @current-change="handleCurrentChange"
                 :current-page.sync='cPage'
                 :page-sizes="[10, 25, 50, 100]"
-                :page-size="pSize" 
+                :page-size="pSize"
                 layout="sizes, prev, pager, next"
                 :total='total'>
                 </el-pagination>
@@ -136,7 +135,6 @@
         </div>
         <div class="mask" v-if="addUser">
                     <el-form :model="addData" :rules="addRules" ref="addData" label-width="120px" class="demo-ruleForm">
-            
             <div class="boom">
                 <div class="top"><span class="delete">信息</span><a href="javascript:;" class="close"><span @click="resetForm('addData')">×</span></a>
                 </div>
@@ -165,7 +163,7 @@
                                             <el-option label="开发人员" value="4"></el-option>
                                         </el-select>
                                     </div>
-                                </el-form-item>  
+                                </el-form-item>
                         </div>
                         <div class="orderName orderModityPublic">
                             <el-form-item label="接待量" prop="maxVisitors">
@@ -186,14 +184,14 @@
                                     <div class="orderInput" >
                                         <el-input type="password" v-model="addData.pass" auto-complete="off"></el-input>
                                     </div>
-                                    
+
                                 </el-form-item>
                         </div>
                         <div class="orderName orderModityPublic">
                             <el-form-item label="确认密码" prop="checkPass">
                                     <div class="orderInput" >
                                         <el-input type="password" v-model="addData.checkPass" auto-complete="off"></el-input>
-                                    </div> 
+                                    </div>
                                 </el-form-item>
                         </div>
                     <div class="input orderModityPublicBtn">
@@ -203,7 +201,6 @@
                 </div>
             </div>
                     </el-form>
-            
         </div>
         <div class="editMask" v-if="editFlag">
             <div class="boom">
@@ -235,7 +232,7 @@
                                             <el-option label="开发人员" value="4"></el-option>
                                         </el-select>
                                     </div>
-                                </el-form-item>  
+                                </el-form-item>
                         </div>
                         <div class="orderName orderModityPublic">
                             <el-form-item label="接待量" prop="maxVisitors">
@@ -254,7 +251,7 @@
                     </el-form>
                     <div class="input orderModityPublicBtn">
                         <el-button type="primary" @click="submitForm('editData')" class="chooseTrue">确认</el-button>
-                        <el-button @click="resetForm('editData')">取消</el-button> 
+                        <el-button @click="resetForm('editData')">取消</el-button>
                     </div>
                 </div>
             </div>
@@ -280,20 +277,20 @@
                                     <div class="orderInput" >
                                         <el-input type="password" v-model="editData.pass" auto- complete="off"></el-input>
                                     </div>
-                                    
+
                                 </el-form-item>
                         </div>
                         <div class="orderName orderModityPublic">
                             <el-form-item label="确认密码" prop="checkPass">
                                     <div class="orderInput" >
                                         <el-input type="password" v-model="editData.checkPass" auto-complete="off"></el-input>
-                                    </div> 
+                                    </div>
                                 </el-form-item>
                         </div>
-                    
+
                         <div class="input orderModityPublicBtn">
                             <el-button type="primary" @click="submitForm('editData')" class="chooseTrue">确认</el-button>
-                            <el-button @click="resetForm('editData')">取消</el-button> 
+                            <el-button @click="resetForm('editData')">取消</el-button>
                         </div>
                     </el-form>
                 </div>
@@ -306,83 +303,78 @@ import axios from 'axios'
 import * as Urls from '@/components/url'
 // import md5 from 'js-md5'
 export default {
-  data() {
-      var validateRealName = (rule,value,callback) => {
-         //console.log(value,"value")
-        
-          var charReg = /(^[a-zA-Z0-9\u4e00-\u9fa5]+$)/;
-         
-          if(!value) {
-              callback(new Error("请输入真实姓名"))
-          }else {
-              if (value.length > 6){
-                    callback(new Error('真实姓名长度为6个字符'));
-                }else if(value.match(charReg) === null){
-                    callback(new Error('只允许汉字、字母、数字'));
-                }
-              callback();
-          }
-      }
-      var validateLoginName = (rule,value,callback) => {
-         //console.log(value,"value")
-        
-          var charReg = /(^[a-zA-Z0-9][a-zA-Z0-9_]{4,15}$)/;
-         
-          if(!value) {
-              callback(new Error("请输入账号"))
-          }else{
-                if (value.length > 16 || value.length < 5){
-                    callback(new Error('账户字符长度需介于5-16'))}
-                else if(value.match(charReg) === null){
-                    callback(new Error('账户应由字母、数字及_组成，首字符必须是字母或数字'));
-                }
-            callback();
-          } 
-      }
-      var validatePass = (rule, value, callback) => {
-          //console.log(value,"value2");
-           var reg = /.*[ ,'\"\\\\].*/
-            if (value === '') {
-                
-                callback(new Error('请输入密码'));
-            } else if (value.length > 18 || value.length < 6) {
-                callback(new Error('密码长度介于6~18个字符'))
-            } else if (value.match(reg) !== null) {
-                callback(new Error('密码由除空格、逗号、单双引号、反斜杠外的任意字符组成'))
-            } else {
-                if (this.addData.checkPass !== '') {
-                    this.$refs.addData.validateField('checkPass');
-                }
-                callback();
-            }
-      };
-      var validatePass2 = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请再次输入密码'));
-        } else if (value !== this.addData.pass) {
-          callback(new Error('两次输入密码不一致!'));
-        } else {
-          callback();
+  data () {
+    var validateRealName = (rule, value, callback) => {
+      // console.log(value,"value")
+      var charReg = /(^[a-zA-Z0-9\u4e00-\u9fa5]+$)/
+      if (!value) {
+        callback(new Error('请输入真实姓名'))
+      } else {
+        if (value.length > 6) {
+          callback(new Error('真实姓名长度为6个字符'))
+        }else if(value.match(charReg) === null) {
+          callback(new Error('只允许汉字、字母、数字'))
         }
-      };
+        callback()
+      }
+    }
+    var validateLoginName = (rule, value, callback) => {
+      // console.log(value,"value")
+      var charReg = /(^[a-zA-Z0-9][a-zA-Z0-9_]{4,15}$)/;
+
+      if(!value) {
+        callback(new Error("请输入账号"))
+      } else {
+        if (value.length > 16 || value.length < 5){
+          callback(new Error('账户字符长度需介于5-16'))}
+        else if(value.match(charReg) === null){
+          callback(new Error('账户应由字母、数字及_组成，首字符必须是字母或数字'));
+        }
+        callback()
+      }
+    }
+    var validatePass = (rule, value, callback) => {
+      // console.log(value,"value2");
+      var reg = /.*[ ,'\"\\\\].*/
+      if (value === '') {
+        callback(new Error('请输入密码'))
+      } else if (value.length > 18 || value.length < 6) {
+        callback(new Error('密码长度介于6~18个字符'))
+      } else if (value.match(reg) !== null) {
+        callback(new Error('密码由除空格、逗号、单双引号、反斜杠外的任意字符组成'))
+      } else {
+        if (this.addData.checkPass !== '') {
+          this.$refs.addData.validateField('checkPass');
+        }
+        callback()
+      }
+    }
+    var validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.addData.pass) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
+    }
     //   修改密码
-      var validatePassChange = (rule, value, callback) => {
-          //console.log(value,"value2");
-           var reg = /.*[ ,'\"\\\\].*/
-            if (value === '') {
-                
-                callback(new Error('请输入密码'));
-            } else if (value.length > 18 || value.length < 6) {
-                callback(new Error('密码长度介于6~18个字符'))
-            } else if (value.match(reg) !== null) {
-                callback(new Error('密码由除空格、逗号、单双引号、反斜杠外的任意字符组成'))
-            } else {
-                if (this.editData.checkPass !== '') {
-                    this.$refs.editData.validateField('checkPass');
-                }
-                callback();
-            }
-      };
+    var validatePassChange = (rule, value, callback) => {
+      // console.log(value,"value2");
+      var reg = /.*[ ,'\"\\\\].*/
+          if (value === '') {
+              callback(new Error('请输入密码'))
+          } else if (value.length > 18 || value.length < 6) {
+              callback(new Error('密码长度介于6~18个字符'))
+          } else if (value.match(reg) !== null) {
+              callback(new Error('密码由除空格、逗号、单双引号、反斜杠外的任意字符组成'))
+          } else {
+              if (this.editData.checkPass !== '') {
+                  this.$refs.editData.validateField('checkPass');
+              }
+              callback()
+          }
+    };
       var validatePassChange = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请再次输入密码'));
@@ -447,7 +439,7 @@ export default {
             editRules: {
                 loginName:[
                      {required: true, message: '请输入账号', trigger: 'blur change' },
-                    
+
                 ],
                 realName:[
                     {required: true, message: '请输入真实姓名', trigger: 'blur change' },
@@ -460,7 +452,7 @@ export default {
                 maxVisitors:[
                     {required: true, message: '请输入接待量', trigger: 'blur, change'},
                     { validator: validateMaxVisitors, trigger: 'blur,change'},
-                   
+
                 ],
                 roleId:[
                     {required: true, message: '请选择角色', trigger: 'blur change' },
@@ -563,7 +555,7 @@ export default {
     methods: {
         changePassword_sub (index,row) {
             this.changePassWord = true;
-            this.changePassword_id = row.id; 
+            this.changePassword_id = row.id;
         },
         roleChange(value){
             console.log(value);
@@ -619,7 +611,7 @@ export default {
                             this.isModify = false;
                             var roleIds = [];
                             roleIds.push(this.addData.roleId)
-                        
+
                             var value = {
                                 available:true,
                                 checkPwd:this.addData.pass,
@@ -714,7 +706,7 @@ export default {
                             else if(this.editData.roleId === "普通客服") this.editData.roleId = "2"
                             else if(this.editData.roleId === "质检人员") this.editData.roleId = "3"
                             else if(this.editData.roleId === "开发人员") this.editData.roleId = "4"
-                            
+
                             roleIds.push(this.editData.roleId)
                             var value = {
                                 loginName:this.editData.loginName,
@@ -735,15 +727,15 @@ export default {
                                     this.editData=null;
                                     this.isModify = false;
                                 if(response){
-                                   
+
                                     if(JSON.parse(response.request.response).code===1 ){
                                     vm.getTableListAll(vm.basicUrl+`/api/auth/user/paginate?realName=${vm.searchCondition.realName}&nickName=${vm.searchCondition.nickName}&loginName=${vm.searchCondition.loginName}&roleId=${vm.searchCondition.Character}&status=${vm.searchCondition.status}&pageSize=${vm.pSize}&currentPage=${vm.cPage}&orderColumn=&dir=`)
-                                    
+
                                     this.$message({
                                         message: '修改成功',
                                         type: 'success'
                                     });
-                                    
+
                                 }else{
                                     this.$message({
                                             message: '修改失败',
@@ -752,9 +744,9 @@ export default {
                                         this.editData=null;
                                         this.isModify = false;
                                     }
-                                    
+
                                 }
-                           
+
                                 }.bind(this))
                                 .catch(function (error) {
                                     console.log(error);
@@ -766,7 +758,7 @@ export default {
                                     this.isModify = false;
                                 }.bind(this));
                         }else if(this.changePassWord){ //修改密码
-                            
+
                             var obj = {
                                 encPwd: md5(this.editData.pass)
                             }
@@ -780,7 +772,7 @@ export default {
                                 })
                                 vm.editData.pass = '';
                                 vm.editData.checkPass = ''
-               
+
                             }else {
                                 vm.changePassWord = false;
                                 vm.$message({
@@ -790,7 +782,7 @@ export default {
                                 vm.editData.pass = '';
                                 vm.editData.checkPass = ''
                             }
-                            
+
                             }).catch(function (error) {
                             console.log(error);
                             vm.changePassWord = false;
@@ -801,8 +793,8 @@ export default {
                     return false;
                 }
             });
-           
-           
+
+
         },
         resetForm (formName) {
             this.$refs[formName].resetFields();
@@ -900,7 +892,7 @@ export default {
           console.log(`当前页: ${val}`);
             this.cPage = val;
             console.log(`每页 ${this.pSize} 条`)
-          this.getTableListAll(this.basicUrl+`/api/auth/user/paginate?realName=${this.searchCondition.realName}&nickName=${this.searchCondition.nickName}&loginName=${this.searchCondition.loginName}&roleId=${this.searchCondition.Character}&status=${this.searchCondition.status}&pageSize=${this.pSize}&currentPage=${val}&orderColumn=&dir=`) 
+          this.getTableListAll(this.basicUrl+`/api/auth/user/paginate?realName=${this.searchCondition.realName}&nickName=${this.searchCondition.nickName}&loginName=${this.searchCondition.loginName}&roleId=${this.searchCondition.Character}&status=${this.searchCondition.status}&pageSize=${this.pSize}&currentPage=${val}&orderColumn=&dir=`)
         },
         onSubmit() {
             console.log('submit!');
@@ -923,7 +915,7 @@ export default {
           min-width: 1100px;
           .searchItem{
               //margin-right: 20px;
-              display: inline-block;  
+              display: inline-block;
               .text{
                 font-size: 14px;
                 color:#999;
@@ -970,7 +962,7 @@ export default {
         margin: 20px 20px 0 20px;
     }
     .tFoot{
-        margin-left:20px 
+        margin-left:20px
     }
     .mask{
         height:100%; width:100%; position:absolute; _position:absolute; top:0; z-index:100;
@@ -1046,7 +1038,7 @@ export default {
                 }
             }
         }
-        
+
     }
     .editMask{
         height:100%; width:100%; position:absolute; _position:absolute; top:0; z-index:100;
@@ -1121,7 +1113,7 @@ export default {
                 }
             }
         }
-        
+
     }
     .passWordMask{
         height:100%; width:100%; position:absolute; _position:absolute; top:0; z-index:100;
@@ -1196,7 +1188,7 @@ export default {
                 }
             }
         }
-        
+
     }
     .deleteMask{
         // min-height: 100vh; width:100%; position:fixed;  top:0; z-index:100;
@@ -1302,7 +1294,7 @@ export default {
                 }
             }
         }
-    }  
+    }
 }
 </style>
 
