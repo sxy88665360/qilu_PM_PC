@@ -54,7 +54,6 @@
             </el-select>
           </div>
         </div>
-
         <div class="searchBtn">
           <el-button type="primary" class="Btn" size="small" @click="searchList">搜索</el-button>
         </div>
