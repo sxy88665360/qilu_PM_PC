@@ -16,7 +16,6 @@
         <span class="text">需要领导给与帮助：</span>
         <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="textarea"></el-input>
       </div>
-
       <div class="searchBtn">
         <el-button type="primary" size="medium" class="Btn_2" @click="searchList">提交</el-button>
       </div>
@@ -29,10 +28,10 @@
 </template>
 <script>
 export default {
-  data() {
-    return {};
+  data () {
+    return {}
   }
-};
+}
 </script>
 <style lang="scss" scoped>
 .projectSchedule {
@@ -85,5 +84,5 @@ export default {
     margin-bottom: 60px;
   }
 }
-</style>
 
+</style>
