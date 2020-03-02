@@ -13,7 +13,7 @@ export default new Router({
   routes: [
     {
       path: '/login',
-      name: 'Login',
+      // name: 'Login'
       component: Login
     }, {
       path: '/',
@@ -21,31 +21,25 @@ export default new Router({
       children: [
         {
           path: '/',
-          name: 'Project',
           component: Project
         },
         {
           path: '/projectApplication',
-          name: 'ProjectApplicationoject',
           component: ProjectApplication
         },
         {
           path: '/projectSchedule',
-          name: 'ProjectSchedule',
           component: ProjectSchedule
         },
         {
           path: '/userSettings',
-          name: 'UserSettings',
           component: UserSettings
         },
         {
           path: '/login',
-          name: 'Login',
           component: Login
         }, {
           path: '/importMatter',
-          name: 'MatterIndex',
           component: MatterIndex
         }
       ]
