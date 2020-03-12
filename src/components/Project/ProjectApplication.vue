@@ -132,7 +132,7 @@ export default {
         keyPersonnel: '', // 主要成员
         corePersonnelArr: null, // 核心成员
         keyPersonnelArr: null, // 主要成员
-        progress: '', // 项目进度
+        progress: {}, // 项目进度
         department: '', // 立项部门
         proposer: '', // 申请人
         projectStatus: null // 项目状态
@@ -143,69 +143,80 @@ export default {
           label: '生产系统',
           children: [
             {
-              id: '1-1',
-              parentId: 1,
+              id: '1_1',
+              parentId: '1',
               label: '101车间'
             },
             {
               id: '1_2',
-              parentId: 1,
+              parentId: '1',
               label: '102车间'
             },
             {
               id: '1_3',
-              parentId: 1,
+              parentId: '1',
               label: '104车间'
             },
             {
               id: '1_4',
-              parentId: 1,
+              parentId: '1',
               label: '201车间'
             },
             {
               id: '1_5',
-              parentId: 1,
+              parentId: '1',
               label: '401车间'
             },
             {
               id: '1_6',
-              parentId: 1,
+              parentId: '1',
               label: '402车间'
             },
             {
               id: '1_7',
-              parentId: 1,
+              parentId: '1',
               label: '仓库'
             },
-            {
-              id: '1_8',
-              parentId: 1,
-              label: '设备',
-              children: [
-                {
-                  id: '1_8_1',
-                  parentId: 1,
-                  label: '设备处'
-                },
-                {
-                  id: '1_8_2',
-                  parentId: 1,
-                  label: '自控'
-                }
-              ]
-            }
           ]
         },
         {
           id: '2',
-          parentId: null,
-          label: 'QA'
+          parentId: 2,
+          label: '设备',
+          children: [
+            {
+              id: '2_1',
+              parentId: 2,
+              label: '设备处'
+            },
+            {
+              id: '2_2',
+              parentId: 2,
+              label: '自控'
+            },{
+              id: '2_3',
+              parentId: 2,
+              label: '自控'
+            }
+          ]
         },
         {
           id: '3',
-          parentId: null,
-          label: 'QC'
+          label: '质量系统',
+          children: [
+            {
+            id: '3_1',
+            parentId: '3',
+            label: 'QA'
+            },
+            {
+              id: '3_2',
+              parentId: '3',
+              label: 'QC'
+            }
+          ]
         },
+       ,
         {
           id: '4',
           parentId: null,
