@@ -64,19 +64,19 @@
       </div>
     </header>
     <div class='tableList'>
-      <el-table :data='tableData' border style='width: 100%'>
+      <el-table :data='tableData' height="450" border style='width: 100%'>
         <el-table-column fixed type='index' label='序号' align='center' width='50'></el-table-column>
         <el-table-column prop='number' label='项目编号' width='120'></el-table-column>
         <el-table-column prop='category' label='项目类别' width='120'></el-table-column>
         <el-table-column prop='name' label='项目名称' width='120'></el-table-column>
-        <el-table-column prop='target' label='项目目标' width='120'></el-table-column>
+        <!-- <el-table-column prop='target' label='项目目标' width='120'></el-table-column> -->
         <el-table-column prop='deadline' label='完成期限' width='120'></el-table-column>
-        <el-table-column prop='expectedReturn' label='预期收益' width='120'></el-table-column>
+        <!-- <el-table-column prop='expectedReturn' label='预期收益' width='120'></el-table-column> -->
         <el-table-column prop='manager' label='项目经理' width='120'></el-table-column>
-        <el-table-column prop='corePersonnel' label='核心成员' width='120'></el-table-column>
-        <el-table-column prop='keyPersonnel' label='主要成员' width='120'></el-table-column>
-        <el-table-column prop='progress' label='项目进度' width='120'></el-table-column>
-        <el-table-column fixed='right' label='操作' width='100'>
+        <!-- <el-table-column prop='corePersonnel' label='核心成员' width='120'></el-table-column>
+        <el-table-column prop='keyPersonnel' label='主要成员' width='120'></el-table-column> -->
+        <!-- <el-table-column prop='progress' label='项目进度' width='120'></el-table-column> -->
+        <el-table-column fixed='right' label='操作' width='200'>
           <template slot-scope='scope'>
             <el-button @click='handleClick(scope.row)' type='text' size='small'>查看</el-button>
             <el-button @click='projectSchedule(scope.row)' type='text' size='small'>提交进度</el-button>
