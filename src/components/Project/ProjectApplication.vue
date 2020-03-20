@@ -4,7 +4,6 @@
       <div class="title">{{isView?'查看项目':'项目申请——新增'}}</div>
     </div>
     <div class='content'>
-
       <div class='formList'>
         <span class='text'>项目名称：</span>
         <el-input v-model='projectForm.name' class='listStyle' size='small' placeholder='请输入项目名称'></el-input>
