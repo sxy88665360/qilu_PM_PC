@@ -1,9 +1,10 @@
 <template>
   <div class='projectApplication'>
-    <header>
-      <p class="title">{{isView?'查看项目':'项目申请——新增'}}</p>
-    </header>
+    <div class="header">
+      <div class="title">{{isView?'查看项目':'项目申请——新增'}}</div>
+    </div>
     <div class='content'>
+
       <div class='formList'>
         <span class='text'>项目名称：</span>
         <el-input v-model='projectForm.name' class='listStyle' size='small' placeholder='请输入项目名称'></el-input>
@@ -94,8 +95,34 @@
           placeholder='请输入申请人'
         ></el-input>
       </div>
+      <div class='formList progress'>
+        <span class='text'>项目章程：</span>
+        <div class="btn">
+          <el-button type='primary' size='medium' class='Btn_2' @click='addProgress'>添加</el-button>
+        </div>
+        <!-- 项目章程列表 -->
+        <div class="progress">
+          <el-table :data='projectForm.progress'  border style='width: 100%'>
+            <el-table-column fixed type='index' label='序号' align='center' width='50'></el-table-column>
+            <el-table-column prop='name' label='分项名称' ></el-table-column>
+            <el-table-column prop='principal' label='责任人' ></el-table-column>
+            <el-table-column prop='startTime' label='开始时间' ></el-table-column>
+            <el-table-column prop='endTime' label='结束时间' ></el-table-column>
+            <el-table-column fixed='right' label='操作' width='100'>
+              <template slot-scope='scope'>
+                <el-button @click='addProgress(scope.row)' type='text' size='small'>修改</el-button>
+                <el-button @click='delProgress(scope.row)' type='text' size='small'>删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <!-- 结束 -->
+      </div>
       <div class='searchBtn' v-if='!isView'>
         <el-button type='primary' size='medium' class='Btn_2' @click='addProjectList'>新增</el-button>
+      </div>
+      <div class='searchBtn' v-if='!isView'>
+        <!-- <el-button type='primary' size='medium' class='Btn_2' @click='addProgress'>下一步</el-button> -->
       </div>
       <div class='searchBtn'>
         <el-button class='Btn_2' size='medium' @click='resetList'>取消</el-button>
@@ -113,6 +140,8 @@ export default {
   components: { Treeselect },
   data () {
     return {
+      progressList:[],
+      isAddprogress:false,
       isEdit: false,
       isView: false,
       dataUrl: Urls.dataUrl,
@@ -132,7 +161,7 @@ export default {
         keyPersonnel: '', // 主要成员
         corePersonnelArr: null, // 核心成员
         keyPersonnelArr: null, // 主要成员
-        progress: {}, // 项目进度
+        progress: [], // 项目进度
         department: '', // 立项部门
         proposer: '', // 申请人
         projectStatus: null // 项目状态
@@ -268,37 +297,48 @@ export default {
         .catch(err => {
           console.log(err)
         })
+    },
+    addProgress () {
+      // this.isAddprogress = !this.isAddprogress
+      // this.$router.push({ path: '/progress' }) // 
+      this.isAddprogress = !this.isAddprogress;
+
+    },
+    cancel () {
+      this.isAddprogress = !this.isAddprogress
     }
   }
 }
 </script>
 <style lang='scss' scoped>
 .projectApplication {
-  // background: #ffffff
   border-radius: 5px;
-  // height: 400px
-  header {
+  .header {
     width: 100%;
-    height: 50px;
     background-color: #ebf8f7;
+    -webkit-box-shadow: 0 0 5px #888888;
     box-shadow: 0 0 5px #888888;
-    p{
-      font-size: 14px;
-      color: #333333;
-      font-weight: bold;
-      line-height: 50px;
-      margin-left: 20px
+    overflow: hidden;
+    .title{
+          position: absolute;
+          width: 100%;
+          z-index: 100000;
+          font-size: 14px;
+          color: #333333;
+          background-color: #ebf8f7;
+          font-weight: bold;
+          line-height: 50px;
+          padding-left: 20px;
     }
   }
   .content {
-    position: relative;
-    margin: 20px;
-    background-color: #fff;
-    min-height: calc(100% - 92px);
-    font-size: 14px;
-    color: #999;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+        margin: 59px 20px 20px 20px;
+        background-color: #fff;
+        min-height: calc(100% - 92px);
+        font-size: 14px;
+        color: #999;
+        border: 1px solid #ccc;
+        border-radius: 4px;
   }
   .formList {
     margin: 0 20px;
@@ -312,6 +352,21 @@ export default {
     .text {
       display: inline-block;
       width: 100px;
+    }
+    // .btn{
+    //   display: inline-block;
+    // }
+  }
+  .progress{
+    overflow: hidden;
+    .text{
+      float: left;
+      
+      // display: block;
+      // height: 40px;
+    }
+    .btn{
+      float: left;
     }
   }
   .searchBtn {

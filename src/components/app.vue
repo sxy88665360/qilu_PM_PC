@@ -323,10 +323,6 @@ a {
       }
     }
     .main-view {
-      // float: left;
-      // left: 240px;
-      // width: calc(100% - 240px);
-      // background-color: #e7ebee;
       width: auto;
       height: 100%;
       overflow: auto;

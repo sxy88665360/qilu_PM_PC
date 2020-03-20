@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import AppIndex from '@/components/app'
 import Project from '@/components/Project/project'
 import ProjectApplication from '@/components/Project/ProjectApplication'
+import Progress from '@/components/Project/Progress'
 import ProjectSchedule from '@/components/Project/ProjectSchedule'
 import UserSettings from '@/components/UserSettings/userSettings' // 用户设置
 import Login from '@/components/Login' // 登录
@@ -22,6 +23,10 @@ export default new Router({
         {
           path: '/',
           component: Project
+        },
+        {
+          path: '/progress',
+          component: Progress
         },
         {
           path: '/projectApplication',
