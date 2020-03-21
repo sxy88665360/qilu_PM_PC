@@ -160,11 +160,12 @@ export default {
   },
   methods: {
     handleClick (itemId) {
-      // console.log(itemId,'itemId');
+      console.log(itemId,'itemId');
       this.$router.push({
         path: '/projectApplication',
         query: { itemId: itemId }
       })
+      localStorage.setItem("itemId", itemId);
     },
     searchList () {
       var data = this.searchCondition
