@@ -9,6 +9,10 @@
         <el-input v-model='projectForm.name' class='listStyle' size='small' placeholder='请输入项目名称'></el-input>
       </div>
       <div class='formList'>
+        <span class='text'>项目编号：</span>
+        <el-input v-model='projectForm.number' class='listStyle' size='small' placeholder='请输入项目名称'></el-input>
+      </div>
+      <div class='formList'>
         <span class='text'>立项部门：</span>
         <treeselect v-model='value' class='listStyle' :multiple='true' :options='options' placeholder='请输入立项部门' />
       </div>
@@ -67,10 +71,12 @@
             <el-table-column prop='principal' label='责任人'></el-table-column>
             <el-table-column prop='startTime' label='开始时间'></el-table-column>
             <el-table-column prop='endTime' label='结束时间'></el-table-column>
-            <el-table-column fixed='right' label='操作' width='100'>
+            <el-table-column fixed='right' label='操作' width='120'>
               <template slot-scope='scope'>
-                <el-button @click='editProgress(scope.row)' type='text' size='small'>修改</el-button>
-                <el-button @click='delProgress(scope.row)' type='text' size='small'>删除</el-button>
+                <el-button type="primary" icon="el-icon-edit" circle @click='editProgress(scope.row)'></el-button>
+                <el-button type="danger" icon="el-icon-delete" circle    @click='delProgress(scope.$index)'></el-button>
+                <!-- <el-button  type='text' size='small'>修改</el-button>
+                <el-button type='text' size='small'>删除</el-button> -->
               </template>
             </el-table-column>
           </el-table>
@@ -162,6 +168,8 @@
     },
     data() {
       return {
+        editList:false,
+        dbUrl:'',
         proData: {},
         proForm: {
           name: '', // 分项名称
@@ -182,7 +190,7 @@
           category: null, // 项目类别
           totalInvestment: '', // 计划投资总额
           backGround: '', // 项目背景
-          time: '', // 立项时间
+          time: Number, // 立项时间
           target: '', // 项目目标
           deadline: null, // 完成期限
           expectedReturn: null, // 预期收益
@@ -290,22 +298,45 @@
         this.isView = true
         var data = this.$route.query.itemId
         this.projectForm = data
-        // console.log(data,this.projectForm,'处于编辑状态')
+        console.log(data,this.projectForm,'处于编辑状态')
         // console.log(this.projectForm,'projectForm')
-      } else {
-        this.isView = false
-      }
+          } else {
+            this.isView = false
+          }
     },
     methods: {
       editProgress (value) {
-        // this.projectForm.progress[]
-        console.log(value,"bianji")
+        this.editList = true;
         this.proForm = value;
         this.isAddprogress = !this.isAddprogress;
       },
+      delProgress(index) {
+        console.log(index,"index")
+        this.$confirm('删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+        console.log(index,"index")
+        // console.log(this.proForm,"index")
+          this.projectForm.progress.splice(index, 1);
+          // this.$message({
+          //   type: 'success',
+          //   message: '删除成功!'
+          // });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+      },
       submitForm(value){
-        this.projectForm.progress.push(value);
-        console.log(this.projectForm,"this.projectForm");
+        if(this.editList){
+          this.editList = false;
+        }
+        else this.projectForm.progress.push(value);
+        // console.log(this.projectForm,"this.projectForm");
         this.isAddprogress = !this.isAddprogress;
         this.proForm = {}
       },
@@ -321,11 +352,13 @@
       },
       addProjectList() {
         var that = this
-        var data = this.projectForm
-        // data.department = this.value[0]? this.value[0]: ''
-        // console.log(data,'projectForm')
+        var data = this.projectForm;
+        if(this.isView)
+             this.dbUrl = '/projectApi/edit'
+        else 
+            this.dbUrl = '/projectApi/new'
         this.axios
-          .post(this.dataUrl + '/projectApi/new', data)
+          .post(this.dataUrl + this.dbUrl, data)
           .then(response => {
             if (response.data.code === 1) {
               // element 弹出
@@ -335,9 +368,6 @@
                   message: '项目修改成功',
                   type: 'success'
                 })
-                // that.$router.push({
-                //   path: '/'
-                // }) // 返回首页
               }else{
                 that.$message({
                   message: '项目提交成功',
