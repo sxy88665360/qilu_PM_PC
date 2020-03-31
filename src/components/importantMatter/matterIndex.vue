@@ -57,6 +57,7 @@
 export default {
   data() {
     return {
+      tableData:{},
       searchCondition:{ // 搜索列表
         name: '',
         principal: ''

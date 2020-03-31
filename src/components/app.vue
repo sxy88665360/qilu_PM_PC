@@ -121,6 +121,12 @@ export default {
           img: "jlsz01",
           imgActive: "jlsz02",
           subList: []
+        },{
+          name: "事项提醒",
+          route: "/reminder",
+          img: "jlsz01",
+          imgActive: "jlsz02",
+          subList: []
         },
         {
           name: "用户设置",
