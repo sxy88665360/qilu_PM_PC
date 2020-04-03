@@ -14,16 +14,16 @@
       </div>
       <div class='formList'>
         <span class='text'>立项部门：</span>
-        <treeselect v-model='value' class='listStyle' :multiple='true' :options='options' placeholder='请输入立项部门' />
+        <treeselect v-model='value' class='listStyle' :multiple='true' :options='options' placeholder='请输入立项部门'/>
       </div>
       <div class='formList'>
         <span class='text'>项目类别：</span>
-        <el-radio v-model='projectForm.category' label='1'>改造项目</el-radio>
-        <el-radio v-model='projectForm.category' label='2'>工艺革新项目</el-radio>
-        <el-radio v-model='projectForm.category' label='3'>天和（乐陵）重点工作项目</el-radio>
-        <el-radio v-model='projectForm.category' label='4'>申请政府奖补资金及专项税免项目</el-radio>
-        <el-radio v-model='projectForm.category' label='5'>专利申请</el-radio>
-        <el-radio v-model='projectForm.category' label='6'>其他项目</el-radio>
+        <el-radio v-model='projectForm.category' label='改造项目'>改造项目</el-radio>
+        <el-radio v-model='projectForm.category' label='工艺革新项目'>工艺革新项目</el-radio>
+        <el-radio v-model='projectForm.category' label='安舜重点工作项目'>安舜重点工作项目</el-radio>
+        <el-radio v-model='projectForm.category' label='申请政府奖补资金及专项税免项目'>申请政府奖补资金及专项税免项目</el-radio>
+        <el-radio v-model='projectForm.category' label='专利申请'>专利申请</el-radio>
+        <el-radio v-model='projectForm.category' label='其他项目'>其他项目</el-radio>
       </div>
       <div class='formList'>
         <span class='text'>计划投资总额：</span>
@@ -293,16 +293,18 @@
       }
     },
     mounted() {
-      if (this.$route.query.itemId) {
+      let itemData = JSON.parse(localStorage.getItem('itemData'));
+      console.log(itemData,"itemData");
+      if (this.$route.query.itemData) {
         //
         this.isView = true
-        var data = this.$route.query.itemId
-        this.projectForm = data
-        console.log(data,this.projectForm,'处于编辑状态')
+        //this.projectForm  = this.$route.query.itemData;
+         this.projectForm  = this.$route.query.itemData;
+        console.log(this.projectForm,'处于编辑状态');
         // console.log(this.projectForm,'projectForm')
-          } else {
-            this.isView = false
-          }
+      } else {
+        this.isView = false
+      }
     },
     methods: {
       editProgress (value) {
@@ -363,6 +365,7 @@
             if (response.data.code === 1) {
               // element 弹出
               // 跳转页面
+
               if(that.isView){
                 that.$message({
                   message: '项目修改成功',
@@ -376,6 +379,7 @@
                 that.$router.push({
                   path: '/'
                 }) // 返回首页
+                localStorage.setItem("itemData", JSON.stringify(data));
               }
              
             }
@@ -458,13 +462,9 @@
 
       .text {
         float: left;
-
-        // display: block;
-        // height: 40px;
       }
 
       .btn {
-        // float: left;
         margin: 0px 20px 10px 32px;
       }
     }
