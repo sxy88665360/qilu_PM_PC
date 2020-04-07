@@ -4,19 +4,16 @@
       <!-- <p>督办事项</p> -->
       <div class="searchCondition">
         <div class="searchItem">
-           <!-- <span class="text">事項名稱</span> -->
           <div class="searchInput">
             <el-input v-model="searchCondition.name"  placeholder="事项名称"></el-input>
           </div>
         </div>
         <div class="searchItem">
-           <!-- <span class="text">责任人</span> -->
           <div class="searchInput">
             <el-input v-model="searchCondition.principal"  placeholder="责任人"></el-input>
           </div>
         </div>
         <div class="searchItem">
-           <!-- <span class="text">责任人</span> -->
           <div class="searchInput">
             <el-select v-model="statusValue" placeholder="进行状态选择">
               <el-option v-for="item in statusItem" :key="item.value" :label="item.label" :value="item.value" ></el-option>
@@ -65,7 +62,7 @@ export default {
       statusItem: [{  // 事项状态
           value: 1,
           label: '正在进行'
-        }, {
+        },{
           value: 2,
           label: '已完结'
         }],

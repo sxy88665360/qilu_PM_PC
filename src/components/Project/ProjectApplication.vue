@@ -14,7 +14,7 @@
       </div>
       <div class='formList'>
         <span class='text'>立项部门：</span>
-        <treeselect v-model='value' class='listStyle' :multiple='true' :options='options' placeholder='请输入立项部门'/>
+        <treeselect v-model='department' class='listStyle' :multiple='true' :options='options' placeholder='请输入立项部门'/>
       </div>
       <div class='formList'>
         <span class='text'>项目类别：</span>
@@ -36,11 +36,13 @@
       </div>
       <div class='formList'>
         <span class='text'>项目背景：</span>
-        <el-input v-model='projectForm.backGround' class='listStyle' size='small' placeholder='请输入项目背景'></el-input>
+        <el-input v-model='projectForm.backGround' class='listStyle' size='small' placeholder='请输入项目背景' 
+        type="textarea" :rows="2"></el-input>
       </div>
       <div class='formList'>
         <span class='text'>项目目标：</span>
-        <el-input v-model='projectForm.target' class='listStyle' size='small' placeholder='请输入项目目标'></el-input>
+        <el-input v-model='projectForm.target' class='listStyle' size='small' placeholder='请输入项目目标'
+        type="textarea" :rows="2"></el-input>
       </div>
       <div class='formList'>
         <span class='text'>项目经理：</span>
@@ -183,7 +185,7 @@
         isEdit: false,
         isView: false,
         dataUrl: Urls.dataUrl,
-        value: null,
+        department: null,
         projectForm: {
           number: '', // 项目编号
           name: '', // 项目名称
@@ -206,7 +208,7 @@
         },
         options: [{
             id: '1',
-            label: '生产系统',
+            label: '生产部',
             children: [{
                 id: '1_1',
                 parentId: '1',
@@ -247,7 +249,7 @@
           {
             id: '2',
             parentId: 2,
-            label: '设备',
+            label: '设备部',
             children: [{
                 id: '2_1',
                 parentId: 2,
@@ -260,7 +262,7 @@
               }, {
                 id: '2_3',
                 parentId: 2,
-                label: '自控'
+                label: '计量'
               }
             ]
           },
@@ -278,18 +280,31 @@
                 label: 'QC'
               }
             ]
-          }, ,
+          }, 
           {
             id: '4',
             parentId: null,
-            label: 'SHE'
+            label: '技术部'
           },
           {
             id: '5',
             parentId: null,
-            label: '运管管理'
+            label: 'SHE'
+          },
+          {
+            id: '6',
+            parentId: null,
+            label: '运管管理部'
+          },{
+            id: '7',
+            parentId: null,
+            label: '人力资源部'
+          },{
+            id: '8',
+            parentId:null,
+            label: '总经理办公室'
           }
-        ]
+        ],
       }
     },
     mounted() {
@@ -355,6 +370,7 @@
       addProjectList() {
         var that = this
         var data = this.projectForm;
+        data.department = this.department[0];
         if(this.isView)
              this.dbUrl = '/projectApi/edit'
         else 

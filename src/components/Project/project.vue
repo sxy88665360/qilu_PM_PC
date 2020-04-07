@@ -9,22 +9,19 @@
           </div>
         </div>
         <div class='searchItem' style='margin-left:240px'>
-          <!-- <span class='text'>项目编号</span> -->
           <div class='searchInput'>
             <el-input v-model='searchCondition.number' size='small' placeholder='请输入项目编号'></el-input>
           </div>
         </div>
         <div class='searchItem'>
-          <!-- <span class='text'>项目名称</span> -->
           <div class='searchInput'>
             <el-input v-model='searchCondition.name' size='small' placeholder='请输入项目名称'></el-input>
           </div>
         </div>
         <div class='searchItem'>
-          <!-- <span class='text'>项目时间</span> -->
           <div class='searchInput'>
             <el-date-picker v-model='searchCondition.time' size='small' unlink-panels type='daterange'
-              range-separator='至' start-placeholder='开始日期' end-placeholder='结束日期'></el-date-picker>
+              range-separator='至' start-placeholder='开始日期' end-placeholder='结束日期' value-format='timestamp'></el-date-picker>
           </div>
         </div>
         <div class='searchItemTwo'>
@@ -36,7 +33,7 @@
         <div class='searchItem'>
           <div class='searchInput'>
             <!-- <el-input v-model='searchCondition.projectStatus'  size='small' placeholder='项目状态' ></el-input> -->
-            <el-select v-model='projectStatus' placeholder='项目状态' size='small'>
+            <el-select v-model='searchCondition.projectStatus' placeholder='项目状态' size='small'>
               <el-option v-for='item in projectStatus' :key='item.value' :label='item.label' :value='item.value'>
               </el-option>
             </el-select>
@@ -95,18 +92,17 @@
         searchCondition: {
           number: '', // 项目编号
           name: '', // 项目名称
-          time: '', // 立项时间
+          time: null, // 立项时间
           department: '', // 立项部门
           manager: '', // 项目经理
-          projectStatus: null // 项目状态
+          projectStatus: null// 项目状态
         },
         projectStatus: [{
             value: '1',
-            label: '进行中项目'
-          },
-          {
+            label: '全部项目'
+          },{
             value: '2',
-            label: '暂停项目'
+            label: '正在进行'
           },
           {
             value: '3',
@@ -114,8 +110,12 @@
           },
           {
             value: '4',
-            label: '全部项目'
-          }
+            label: '暂停项目'
+          },{
+             value: '5',
+            label: '失败项目'
+          },
+          
         ],
         options: [{
             id: '1',
@@ -205,7 +205,15 @@
           {
             id: '6',
             parentId: null,
-            label: '运管管理'
+            label: '运管管理部'
+          },{
+            id: '7',
+            parentId: null,
+            label: '人力资源部'
+          },{
+            id: '8',
+            parentId:null,
+            label: '总经理办公室'
           }
         ],
         tableData: null
@@ -229,7 +237,7 @@
       searchList() {
         let data = this.searchCondition
         data.department = this.department
-        console.log(data,"搜索条件")
+        console.log(data,"搜索条件");
         let that = this
         this.axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
         this.axios
