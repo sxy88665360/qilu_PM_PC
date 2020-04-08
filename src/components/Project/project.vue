@@ -5,7 +5,7 @@
         <div class='searchItemTwo department'>
           <!-- <span class='text'>立项部门</span> -->
           <div class='searchInput'>
-            <treeselect v-model='department' :multiple='true' :options='options' placeholder='请输入立项部门' />
+            <treeselect v-model='department' :multiple='true' :options='options' placeholder='请输入立项部门'/>
           </div>
         </div>
         <div class='searchItem' style='margin-left:240px'>
@@ -256,6 +256,7 @@
           })
       },
       resetList() {
+        this.department = null;
         this.searchCondition = {
           number: '', // 项目编号
           projectName: '', // 项目名称
