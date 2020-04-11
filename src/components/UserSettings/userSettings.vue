@@ -40,7 +40,7 @@
         </el-table-column>
         <el-table-column prop="department" :formatter="formatterDepartment" label="所在部门">
         </el-table-column>
-        <el-table-column prop="roleId" label="用户类型">
+        <el-table-column prop="roleId" :formatter="formatterRoleId" label="用户类型">
         </el-table-column>
         <el-table-column label="编辑" width="100">
           <template slot-scope="scope">
@@ -714,56 +714,53 @@
           if (valid) {
             if (this.addUser) { // 添加
               this.isModify = false;
-            //   var roleIds = [];
-            //   roleIds.push(this.addData.roleId)
               var value = {
-                available: true,
-                checkPwd: this.addData.pass,
-                encPwd: md5(this.addData.pass),
+                password: this.addData.pass,
+                encPassword: md5(this.addData.pass),
                 loginName: this.addData.loginName,
                 roleId: this.addData.roleId,
-                maxVisitors: this.addData.maxVisitors,
                 realName: this.addData.realName,
-                roleIds
+                department: this.addDepartment,
               }
-              // console.log(value,"value");
+              console.log(value,"value");
               // POST 请求
               var data = JSON.stringify(value);
               //var url= this.basicUrl+`/api/auth/user/update/${this.editData.id}`;
-              var url = this.basicUrl + `/api/auth/user/create/`
+              var url = this.basicUrl + `/userApi/userList/add`
               axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
               axios.post(url, data)
                 .then(function (response) {
-                  if (JSON.parse(response.request.response).code === 1) {
+                  console.log(response,"response")
+                  if (response.data.code === 1) {
                     vm.getTableListAll(vm.basicUrl +
-                      `/api/auth/user/paginate?realName=${vm.searchCondition.realName}&nickName=${vm.searchCondition.nickName}&loginName=${vm.searchCondition.loginName}&roleId=${vm.searchCondition.Character}&status=${vm.searchCondition.status}&pageSize=${vm.pSize}&currentPage=${vm.cPage}&orderColumn=&dir=`
+                      `/userApi/userList/paginate?realName=${vm.searchCondition.realName}&loginName=${vm.searchCondition.loginName}&department=${vm.department}`
                       )
                     vm.$message({
                       message: '添加成功',
                       type: 'success'
                     });
                     vm.addData = {
-                      available: true,
+                      password: "",
+                      encPassword: "",
                       loginName: "",
-                      maxVisitors: "1",
-                      // nickName:"",
+                      roleId: "",
                       realName: "",
-                      status: null,
                     }
+                    vm.department = null
                     vm.addUser = false;
-                  } else if (JSON.parse(response.request.response).code === 1009) {
+                  }else if (response.data.code=== 1009) {
                     vm.$message({
                       message: '账号已存在',
                       type: 'warning'
                     });
                     vm.addData = {
-                      available: true,
+                      password: "",
+                      encPassword: "",
                       loginName: "",
-                      maxVisitors: "1",
-                      // nickName:"",
+                      roleId: "",
                       realName: "",
-                      status: null,
                     }
+                    vm.addDepartment = null
                     vm.addUser = false;
                   } else {
                     vm.$message({
@@ -771,13 +768,13 @@
                       type: 'warning'
                     });
                     vm.addData = {
-                      available: true,
+                      password: "",
+                      encPassword: "",
                       loginName: "",
-                      maxVisitors: "1",
-                      // nickName:"",
+                      roleId: "",
                       realName: "",
-                      status: "",
                     }
+                    vm.addDepartment = null
                     this.addUser = false;
                   }
                 }.bind(this))
@@ -788,13 +785,14 @@
                     type: 'warning'
                   });
                   vm.addData = {
-                    available: true,
-                    loginName: "",
-                    maxVisitors: "",
-                    // nickName:"",
-                    realName: "",
-                    status: "",
-                  }
+                      password: "",
+                      encPassword: "",
+                      loginName: "",
+                      roleId: "",
+                      realName: "",
+                     
+                    }
+                  vm.addDepartment = null
                   vm.editData = null;
                   vm.addUser = false;
                 }.bind(this));
@@ -947,6 +945,11 @@
         if (row.department == 7) return "人力资源部"
         if (row.department == 8) return "总经理办公室"
       },
+      formatterRoleId (row) {
+        if (row.roleId == 1)return "管理员"
+        if (row.roleId == 2) return "部门领导"
+        if (row.roleId == 3) return "员工"
+      },
       editList(index, row) {
         this.editFlag = true;
         this.editData = row;
@@ -958,36 +961,34 @@
         this.isModify = true;
       },
       deleteList(index, row) {
-        //console.log(row,"ddddddddd")
+        console.log(row,"ddddddddd")
         this.deleteRow = row;
         this.isDelete = true;
-
       },
       returnDelete() {
         this.isDelete = false;
       },
       deleteTrue() {
-        var url = this.basicUrl + `/api/auth/user/delete/${this.deleteRow.id}`
+        var vm = this;
+        //var url = this.basicUrl + `/userList/delete?id=${this.deleteRow._id}`
+        var url = this.basicUrl + `/userApi/userList/delete`
+        // var url = this.basicUrl + `/userApi/userList/add`
+        axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
         /* get请求 */
-        axios({
-            method: 'get',
-            url,
-            headers: {
-              'X-Requested-With': 'XMLHttpRequest'
-            },
-            requestHeader: {
-              'Content-Type': 'application/json'
-            },
-          }).then(function (response) {
+        // axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
+        let data = {id:this.deleteRow._id};
+        axios.post(url,data)
+        .then
+        (function (response) {
             this.isDelete = false;
             if (response.data.code === 1) {
               this.$message({
                 message: '删除成功',
                 type: 'success'
               });
-              this.getTableListAll(this.basicUrl +
-                `/api/auth/user/paginate?realName=${this.searchCondition.realName}&nickName=${this.searchCondition.nickName}&loginName=${this.searchCondition.loginName}&roleId=${this.searchCondition.Character}&status=${this.searchCondition.status}&pageSize=10&currentPage=1&orderColumn=&dir=`
-                )
+              vm.getTableListAll(vm.basicUrl +
+                      `/userApi/userList/paginate?realName=${vm.searchCondition.realName}&loginName=${vm.searchCondition.loginName}&department=${vm.department}`
+                      )
             }
           }.bind(this))
           .catch(function (err) {
