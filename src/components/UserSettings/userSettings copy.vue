@@ -13,7 +13,7 @@
           </div>
         </div>
         <div class="searchItem">
-          <div class="searchInput" style= 'position: relative; top: 13px;'>
+          <div class="searchInput" style= 'position: relative; top: 13px; '>
             <treeselect  v-model='department' :multiple='true' :options='options' placeholder='请输入立项部门' />
           </div>
         </div>
@@ -38,9 +38,9 @@
         </el-table-column>
         <el-table-column prop="realName" label="真实姓名">
         </el-table-column>
-        <el-table-column prop="department" :formatter="formatterDepartment" label="所在部门">
+        <el-table-column prop="status" :formatter="formatterStatus" label="所在部门">
         </el-table-column>
-        <el-table-column prop="roleId" label="用户类型">
+        <el-table-column prop="roleName" label="角色">
         </el-table-column>
         <el-table-column label="编辑" width="100">
           <template slot-scope="scope">
@@ -84,21 +84,9 @@
               </el-form-item>
             </div>
             <div class="orderName orderModityPublic">
-                <el-form-item label="所属部门" prop="addDepartment">
+                <el-form-item label="所属部门" prop="loginName">
                 <div class="orderInput">
                   <treeselect  v-model='addDepartment' :multiple='true' :options='options' style="width：150px" placeholder='请输入立项部门' />
-                </div>
-              </el-form-item>
-            </div>
-            <div class="orderName orderModityPublic">
-                <el-form-item label="用户类型" prop="roleId">
-                <div class="orderInput">
-                  <!-- <treeselect  v-model='addDepartment' :multiple='true' :options='options' style="width：150px" placeholder='请输入立项部门' /> -->
-                  <el-select v-model="addData.roleId" placeholder="" @change="roleChange">
-                    <el-option label="管理员" value="1" ></el-option>
-                    <el-option label="部门领导" value="2"></el-option>
-                    <el-option label="员工" value="3"></el-option>
-                  </el-select>
                 </div>
               </el-form-item>
             </div>
@@ -234,7 +222,7 @@
 </template>
 <script>
   import axios from 'axios'
-  import md5 from 'js-md5'
+  // import md5 from 'js-md5'
   
   // import the component
   import Treeselect from '@riophae/vue-treeselect'
@@ -354,10 +342,10 @@
               message: '请输入账号',
               trigger: 'blur change'
             },
-            // {
-            //   validator: validateLoginName,
-            //   trigger: 'blur change'
-            // },
+            {
+              validator: validateLoginName,
+              trigger: 'blur change'
+            },
           ],
           pass: [
             //{min: 6, max: 18, message: '密码长度介于6~18个字符', trigger: 'blur change'},
@@ -401,8 +389,21 @@
           //     {required: true, message: '请输入昵称', trigger: 'blur' },
           //     {min: 1, max: 16, message: '长度需介于1~16 个字符', trigger: 'blur change'},
           // ],
-
-
+          maxVisitors: [{
+              required: true,
+              message: '请输入接待量',
+              trigger: 'blur change'
+            },
+            {
+              validator: validateMaxVisitors,
+              trigger: 'blur,change'
+            },
+          ],
+          roleId: [{
+            required: true,
+            message: '请选择角色',
+            trigger: 'blur change'
+          }, ]
         },
         editRules: {
           loginName: [{
@@ -634,34 +635,34 @@
       }
     },
     mounted() {
-      // var vm = this;
-      // var url = this.basicUrl + `/admin/package/find`;
-      // axios({
-      //     method: 'get',
-      //     url,
-      //     headers: {
-      //       'X-Requested-With': 'XMLHttpRequest'
-      //     },
-      //     requestHeader: {
-      //       'Content-Type': 'application/json'
-      //     },
-      //   }).then(function (response) {
-      //     console.log(response);
-      //     if (JSON.parse(response.request.response).code === 1) {
-      //       vm.packageType = JSON.parse(response.request.response).data.packageType;
-      //       console.log(vm.packageType, 'this.packageType')
-      //       if (vm.packageType === 3) {
-      //         document.getElementById('permissions').style.backgroundColor = "gray";
-      //         document.getElementById('permissions').style.cursor = "not-allowed";
-      //       }
-      //     }
-      //   }.bind(this))
-      //   .catch(function (err) {
-      //     console.log(err)
-      //     console.log(url)
-      //   }.bind(this))
+      var vm = this;
+      var url = this.basicUrl + `/admin/package/find`;
+      axios({
+          method: 'get',
+          url,
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          requestHeader: {
+            'Content-Type': 'application/json'
+          },
+        }).then(function (response) {
+          console.log(response);
+          if (JSON.parse(response.request.response).code === 1) {
+            vm.packageType = JSON.parse(response.request.response).data.packageType;
+            console.log(vm.packageType, 'this.packageType')
+            if (vm.packageType === 3) {
+              document.getElementById('permissions').style.backgroundColor = "gray";
+              document.getElementById('permissions').style.cursor = "not-allowed";
+            }
+          }
+        }.bind(this))
+        .catch(function (err) {
+          console.log(err)
+          console.log(url)
+        }.bind(this))
       this.getTableListAll(this.basicUrl +
-        `/userApi/userList/paginate?realName=&loginName=&department=&roleId=`
+        `/api/auth/user/paginate?realName=&nickName=&loginName=&roleId=&status=&pageSize=10&currentPage=1&orderColumn=&dir=`
         );
     },
     methods: {
@@ -695,15 +696,15 @@
             // nickName:'',
             Character: '',
             status: ''
-          }
-          // this.getTableListAll(this.basicUrl +
-          //   `/api/auth/user/paginate?realName=&nickName=&loginName=&roleId=&status=&pageSize=10&currentPage=1&orderColumn=&dir=`
-          //   );
+          },
+          this.getTableListAll(this.basicUrl +
+            `/api/auth/user/paginate?realName=&nickName=&loginName=&roleId=&status=&pageSize=10&currentPage=1&orderColumn=&dir=`
+            );
       },
       searchList() {
         //console.log(this.basicUrl+`/api/auth/user/paginate?realName=${this.searchCondition.realName}&nickName=${this.searchCondition.nickName}&loginName=${this.searchCondition.loginName}&roleId=${this.searchCondition.Character}&status=${this.searchCondition.status}&pageSize=10&currentPage=1&orderColumn=&dir=`)
         this.getTableListAll(this.basicUrl +
-          `/userApi/userList/paginate?realName=${this.searchCondition.realName}&loginName=${this.searchCondition.loginName}&roleId=${this.searchCondition.Character}&department=`+this.department
+          `/api/auth/user/paginate?realName=${this.searchCondition.realName}&nickName=${this.searchCondition.nickName}&loginName=${this.searchCondition.loginName}&roleId=${this.searchCondition.Character}&status=${this.searchCondition.status}&pageSize=10&currentPage=1&orderColumn=&dir=`
           )
       },
       submitForm(formName) {
@@ -859,6 +860,7 @@
                   this.isModify = false;
                 }.bind(this));
             } else if (this.changePassWord) { //修改密码
+
               var obj = {
                 encPwd: md5(this.editData.pass)
               }
@@ -914,17 +916,16 @@
               'Content-Type': 'application/json'
             },
           }).then(function (response) {
-
+            console.log(response, "获取客服管理列表");
             if (response.data.code === 1) {
-              //console.log()
-              console.log(response.data.data,"data")
+              //console.log(response.data.data,"data")
               var data = response.data.data;
-              // console.log(response.data.data.total, "data.total")
+              console.log(response.data.data.total, "data.total")
               this.total = response.data.data.total;
-              // this.cPage = response.data.data.pageNum;
-              // this.pSize = response.data.data.pageSize;
-              this.tableData = response.data.data;
-              
+              this.cPage = response.data.data.pageNum;
+              this.pSize = response.data.data.pageSize;
+              this.tableData = response.data.data.list;
+              console.log()
             }
           }.bind(this))
           .catch(function (err) {
@@ -932,20 +933,11 @@
             console.log(url)
           }.bind(this))
       },
-      formatterDepartment(row) {
-        // console.log(row,"row")
-        // let department = row.department
-        // let A = department.splice(0,1)
-        // let B = department.splice(1,1)
-        // console.log(A,B,"A-B");
-        if (row.department == 1)return "生产部"
-        if (row.department == 2) return "设备部"
-        if (row.department == 3) return "质量系统"
-        if (row.department == 4) return "技术部"
-        if (row.department == 5) return "SHE"
-        if (row.department == 6) return "运营管理部"
-        if (row.department == 7) return "人力资源部"
-        if (row.department == 8) return "总经理办公室"
+      formatterStatus(row) {
+        //console.log(row,"row")
+        if (row.status === 3) return "挂起"
+        if (row.status === 2) return "在线"
+        if (row.status === 1) return "离线"
       },
       editList(index, row) {
         this.editFlag = true;
