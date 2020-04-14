@@ -659,7 +659,7 @@
         }.bind(this))
         .catch(function (err) {
           console.log(err)
-          console.log(url)
+          // console.log(url)
         }.bind(this))
       this.getTableListAll(this.basicUrl +
         `/api/auth/user/paginate?realName=&nickName=&loginName=&roleId=&status=&pageSize=10&currentPage=1&orderColumn=&dir=`
