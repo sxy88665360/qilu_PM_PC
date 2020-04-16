@@ -55,7 +55,7 @@
         <el-table-column prop='category' label='项目类别'></el-table-column>
         <el-table-column prop='name' label='项目名称'></el-table-column>
         <!-- <el-table-column prop='target' label='项目目标' width='120'></el-table-column> -->
-        <el-table-column prop='deadline' label='完成期限'></el-table-column>
+        <el-table-column prop='planTime' label='完成期限' :formatter="formatterEndTime"></el-table-column>
         <!-- <el-table-column prop='expectedReturn' label='预期收益' width='120'></el-table-column> -->
         <el-table-column prop='manager' label='项目经理'></el-table-column>
         <!-- <el-table-column prop='corePersonnel' label='核心成员' width='120'></el-table-column>
@@ -74,6 +74,7 @@
 </template>
 <script>
   // import the component
+  import moment from 'moment'
   import Treeselect from '@riophae/vue-treeselect'
   // import the styles
   import '@riophae/vue-treeselect/dist/vue-treeselect.css'
@@ -223,6 +224,12 @@
       this.searchList()
     },
     methods: {
+      formatterEndTime(row){
+        let time = row.planTime
+        if(time){
+          return moment(time).format('YYYY-MM-DD');
+        }
+      },
       handleClick(data) {
         this.$router.push({
           path: '/projectApplication',
@@ -265,8 +272,13 @@
           manager: '' // 申请人
         }
       },
-      projectSchedule() {
-
+      projectSchedule(data) {
+        this.$router.push({
+          path: '/projectSchedule'
+        })
+        console.log(data, "projectScheduleData");
+        console.log(JSON.parse(JSON.stringify(data)), "JSON.parse(JSON.stringify(data))");
+        // localStorage.setItem("itemData", JSON.stringify(data));
       }
     }
   }

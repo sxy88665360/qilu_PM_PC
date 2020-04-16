@@ -14,7 +14,7 @@
         </div>
         <div class="searchItem">
           <div class="searchInput" style= 'position: relative; top: 13px;'>
-            <treeselect  v-model='department' :multiple='true' :options='options' placeholder='请输入立项部门' />
+            <treeselect  v-model='department' :multiple='true' :options='options' placeholder='请输入立项部门'/>
           </div>
         </div>
       </div>

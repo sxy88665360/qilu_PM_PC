@@ -51,7 +51,7 @@ a{
   top: 20% ;
   transform: translateX(120px);
 }
-.userSettings .vue-treeselect__control {
-  // height: 38px;
-}
+// .userSettings .vue-treeselect__control {
+//   // height: 38px;
+// }
 </style>

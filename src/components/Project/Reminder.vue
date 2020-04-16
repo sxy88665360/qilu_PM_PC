@@ -11,7 +11,7 @@
                 <el-table-column prop='category' label='项目类别' ></el-table-column>
                 <el-table-column prop='name' label='项目名称' ></el-table-column>
                 <!-- <el-table-column prop='target' label='项目目标' width='120'></el-table-column> -->
-                <el-table-column prop='deadline' label='完成期限' ></el-table-column>
+                <el-table-column prop='planTime' label='完成期限' ></el-table-column>
                 <!-- <el-table-column prop='expectedReturn' label='预期收益' width='120'></el-table-column> -->
                 <el-table-column prop='manager' label='项目经理' ></el-table-column>
                 <!-- <el-table-column prop='corePersonnel' label='核心成员' width='120'></el-table-column>
@@ -71,12 +71,11 @@ export default {
             // console.log(itemId,'itemId');
             this.$router.push({
                 path: '/projectApplication',
-                query: { itemId: data }
+                query: { itemData: data }
             })
             localStorage.setItem("itemId", data);
         },
     }
-
 }
 </script>
 

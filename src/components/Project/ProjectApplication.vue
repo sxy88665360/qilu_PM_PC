@@ -37,12 +37,16 @@
       <div class='formList'>
         <span class='text'>项目背景：</span>
         <el-input v-model='projectForm.backGround' class='listStyle' size='small' placeholder='请输入项目背景' 
-        type="textarea" :rows="2"></el-input>
+        type="textarea" :rows="1"></el-input>
       </div>
       <div class='formList'>
         <span class='text'>项目目标：</span>
         <el-input v-model='projectForm.target' class='listStyle' size='small' placeholder='请输入项目目标'
-        type="textarea" :rows="2"></el-input>
+        type="textarea" :rows="1"></el-input>
+      </div>
+      <div class='formList'>
+        <span class='text'>计划完成时间：</span>
+        <el-date-picker v-model="projectForm.planTime" class='listStyle' type="date" placeholder="选择日期" value-format="timestamp"> </el-date-picker>
       </div>
       <div class='formList'>
         <span class='text'>项目经理：</span>
@@ -71,8 +75,13 @@
             <el-table-column fixed type='index' label='序号' align='center' width='50'></el-table-column>
             <el-table-column prop='name' label='分项名称'></el-table-column>
             <el-table-column prop='principal' label='责任人'></el-table-column>
-            <el-table-column prop='startTime' label='开始时间'></el-table-column>
-            <el-table-column prop='endTime' label='结束时间'></el-table-column>
+            <el-table-column prop='startTime' label='计划开始时间' :formatter="formatterStartTime"></el-table-column>
+            <el-table-column prop='endTime' label='计划结束时间' :formatter="formatterEndTime"></el-table-column>
+            <el-table-column prop='isEnd' label='是否完成' :formatter="formatterIsEnd"></el-table-column>
+             <el-table-column prop='realStartTime' label='实际开始时间' :formatter="formatterRealStartTime"></el-table-column>
+            <el-table-column prop='realEndTime' label='实际结束时间' :formatter="formatterRealEndTime"></el-table-column>
+            <el-table-column prop='process' label='进展'></el-table-column>
+            <el-table-column prop='unDoneReason' label='延期原因'></el-table-column>
             <el-table-column fixed='right' label='操作' width='120'>
               <template slot-scope='scope'>
                 <el-button type="primary" icon="el-icon-edit" circle @click='editProgress(scope.row)'></el-button>
@@ -100,7 +109,7 @@
     <div class="mask" v-if="isAddprogress">
       <div class="boom">
         <div class="top">
-          <span class="delete">添加进度表</span><a href="javascript:;" class="close"><span @click="resetForm"></span></a>
+          <span class="delete">{{editList?"修改进度表":"添加进度表"}}</span><a href="javascript:;" class="close"><span @click="resetForm"></span></a>
         </div>
         <div class="inner">
           <el-form :model="proForm" :rules="proRules" ref="proData" label-width="120px" class="demo-ruleForm">
@@ -120,21 +129,74 @@
               </el-form-item>
             </div>
             <div class="orderName orderModityPublic">
-              <el-form-item label="开始时间" prop="startTime">
+              <el-form-item label="计划开始时间" prop="startTime">
                 <div class="orderInput">
-                  <el-date-picker v-model="proForm.startTime" type="date" placeholder="选择日期" value-format="timestamp">
+                  <el-date-picker v-model="proForm.startTime" type="date" placeholder="选择日期" value-format="timestamp" @change="calculationDelay">
                   </el-date-picker>
                 </div>
               </el-form-item>
             </div>
              <div class="orderName orderModityPublic">
-              <el-form-item label="结束时间" prop="endTime">
+              <el-form-item label="计划结束时间" prop="endTime">
                 <div class="orderInput">
-                  <el-date-picker v-model="proForm.endTime" type="date" placeholder="选择日期" value-format="timestamp">
+                  <el-date-picker v-model="proForm.endTime" type="date" placeholder="选择日期" value-format="timestamp" @change="calculationDelay">
                   </el-date-picker>
                 </div>
               </el-form-item>
             </div>
+            <div class="orderName orderModityPublic">
+              <el-form-item label="是否开始" prop="isStart">
+                <div class="orderInput">
+                  <el-select v-model="proForm.isStart" placeholder="分项是否开始" @change="calculationDelay">
+                    <el-option label="是" value= "1"></el-option>
+                    <el-option label="否" value= "2"></el-option>
+                  </el-select>
+                </div>
+              </el-form-item>
+            </div>
+            <div class="orderName orderModityPublic" v-if="proForm.isStart=='1'">
+              <el-form-item label="实际开始时间" prop="realStartTime">
+                <div class="orderInput">
+                  <el-date-picker v-model="proForm.realStartTime" type="date" placeholder="选择日期" value-format="timestamp" @change="calculationDelay">
+                  </el-date-picker>
+                </div>
+              </el-form-item>
+            </div>
+            <div class="orderName orderModityPublic" v-if="proForm.isStart=='1'">
+              <el-form-item label="是否完成" prop="isEnd">
+                <div class="orderInput">
+                  <el-select v-model="proForm.isEnd" placeholder="请选择是否完成" @change="calculationDelay">
+                    <el-option label="是" value= "1"></el-option>
+                    <el-option label="否" value= "2"></el-option>
+                  </el-select>
+                </div>
+              </el-form-item>
+            </div>
+            
+             <div class="orderName orderModityPublic" v-if="proForm.isEnd=='1'">
+              <el-form-item label="实际结束时间" prop="realEndTime">
+                <div class="orderInput">
+                  <el-date-picker v-model="proForm.realEndTime" type="date" placeholder="选择日期" value-format="timestamp" @change="calculationDelay">
+                  </el-date-picker>
+                </div>
+              </el-form-item>
+            </div>
+
+            <div class="orderName orderModityPublic" v-if="isDelay" >
+              <el-form-item label="延期原因" prop="unDoneReason">
+                <div class="orderInput">
+                  <el-input type="textarea" v-model="proForm.unDoneReason" rows="1"></el-input>
+                </div>
+              </el-form-item>
+            </div>
+             <div class="orderName orderModityPublic" v-if="proForm.isEnd ==='2'&&proForm.isStart=='1'">
+              <el-form-item label="事项进展" prop="process">
+                <div class="orderInput">
+                  <el-input type="textarea" v-model="proForm.process" rows="1"></el-input>
+                </div>
+              </el-form-item>
+            </div>
+            <!-- <div class="orderName orderModityPublic" v-if="proForm.isEnd ==='2'&& proForm.isStart=='1'"> -->
             <div class="innerBottom">
               <!-- <el-form-item  prop="loginNameChoose">
                       <el-transfer
@@ -149,7 +211,6 @@
                   </el-form-item> -->
             </div>
           </el-form>
-
           <div class="input orderModityPublicBtn">
             <el-button type="primary" @click="submitForm(proForm)" class="chooseTrue">确认</el-button>
             <el-button @click="resetForm">取消</el-button>
@@ -162,6 +223,7 @@
 <script>
   import Treeselect from '@riophae/vue-treeselect'
   // import the styles
+  import moment from 'moment'
   import '@riophae/vue-treeselect/dist/vue-treeselect.css'
   import * as Urls from '@/components/url'
   export default {
@@ -170,6 +232,7 @@
     },
     data() {
       return {
+        isDelay:false,
         editList:false,
         dbUrl:'',
         proData: {},
@@ -177,7 +240,13 @@
           name: '', // 分项名称
           principal: '', //负责人
           startTime: null, // 开始时间
-          endTime: null // 完成时间
+          endTime: null, // 完成时间
+          realStartTime: null, // 开始时间
+          realEndTime: null, // 完成时间
+          isEnd: '',
+          isStart:'',
+          process:'',
+          unDoneReason:''
         },
         proRules: {},
         progressList: [],
@@ -196,6 +265,7 @@
           target: '', // 项目目标
           deadline: null, // 完成期限
           expectedReturn: null, // 预期收益
+          planTime:null, //计划完成时间
           manager: '', // 项目经理
           corePersonnel: '', // 核心成员
           keyPersonnel: '', // 主要成员
@@ -311,7 +381,6 @@
       let itemData = JSON.parse(localStorage.getItem('itemData'));
       console.log(itemData,"itemData");
       if (this.$route.query.itemData) {
-        //
         this.isView = true
         //this.projectForm  = this.$route.query.itemData;
          this.projectForm  = this.$route.query.itemData;
@@ -322,6 +391,66 @@
       }
     },
     methods: {
+      // isEndDelay() {
+      //   if(this.proForm.isEnd =='2'){
+      //     let dataNum = Date.parse(new Date());
+      //     console.log(dataNum,"当前日期时间戳")
+      //     if(dataNum > )
+      //   }
+        
+      // },
+      calculationDelay(){
+        console.log("计算拖延时间")
+        // 开始时间推迟
+        if(Number(this.proForm.realStartTime) > Number(this.proForm.startTime)) {
+          this.isDelay = true;
+          console.log(Number(this.proForm.realStartTime),Number(this.proForm.startTime),"开始时间yanqi")
+        }
+        else if(Number(this.proForm.realEndTime) > Number(this.proForm.endTime)){
+          this.isDelay = true;
+          console.log(Number(this.proForm.realEndTime),Number(this.proForm.endTime),"完成时间yanqi")
+        }
+        else if((Date.parse(new Date()) > Number(this.proForm.endTime))&&this.proForm.isEnd =='2'){ // 截止当前未完成
+          this.isDelay = true;
+          console.log((Date.parse(new Date()),Number(this.proForm.endTime),"完成时间yanqi"))
+        }
+        else if((Date.parse(new Date()) > Number(this.proForm.startTime))&&this.proForm.isStart =='2'){ // 截止当前未完成
+          this.isDelay = true;
+          console.log((Date.parse(new Date()),Number(this.proForm.endTime),"完成时间yanqi"))
+        }
+        else{
+          this.isDelay = false;
+          this.proForm.unDoneReason = '';
+        }
+      },
+      formatterRealStartTime(row) {
+        let time = row.realStartTime
+        if(time){
+          return moment(time).format('YYYY-MM-DD');
+        }
+      },
+      formatterRealEndTime(row) {
+        let time = row.realEndTime
+        if(time){
+          return moment(time).format('YYYY-MM-DD');
+        }
+      },
+      formatterStartTime(row) {
+        let time = row.startTime
+        if(time){
+          return moment(time).format('YYYY-MM-DD');
+        }
+      },
+      formatterEndTime(row){
+        let time = row.endTime
+        if(time){
+          return moment(time).format('YYYY-MM-DD');
+        }
+      },
+      formatterIsEnd (row) {
+        if (row.isEnd === "1")return "是"
+        if (row.isEnd === "2") return "否"
+      },
       editProgress (value) {
         this.editList = true;
         this.proForm = value;
@@ -370,11 +499,16 @@
       addProjectList() {
         var that = this
         var data = this.projectForm;
-        data.department = this.department[0];
-        if(this.isView)
-             this.dbUrl = '/projectApi/edit'
-        else 
-            this.dbUrl = '/projectApi/new'
+        
+        if(this.isView){
+           this.dbUrl = '/projectApi/edit'
+           data.department = this.department;
+        }
+        else {
+          this.dbUrl = '/projectApi/new'
+           data.department = this.department[0];
+        }
+            
         this.axios
           .post(this.dataUrl + this.dbUrl, data)
           .then(response => {
@@ -407,10 +541,13 @@
       addProgress() {
         // this.isAddprogress = !this.isAddprogress
         // this.$router.push({ path: '/progress' }) // 
+        ///this.isEdit = false;
+        this.editList = false;
         this.isAddprogress = !this.isAddprogress;
       },
       resetForm() {
         this.isAddprogress = !this.isAddprogress;
+        this.proForm = {}
       },
       cancel() {
         this.isAddprogress = !this.isAddprogress
