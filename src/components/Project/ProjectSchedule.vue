@@ -24,10 +24,10 @@
           </el-table-column>
         </el-table>
       </div>
-      <div class="formList">
+      <!-- <div class="formList">
         <span class="text">项目进展：</span>
         <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="textarea"></el-input>
-      </div>
+      </div> -->
       <div class="formList">
         <span class="text">下周工作计划：</span>
         <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="nextPlan"></el-input>

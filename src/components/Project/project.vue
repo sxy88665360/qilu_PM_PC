@@ -100,20 +100,23 @@
         },
         projectStatus: [{
             value: '1',
-            label: '全部项目'
+            label: '已完成项目'
           },{
             value: '2',
+            label: '已奖励项目'
+          },{
+            value: '3',
             label: '正在进行'
           },
           {
-            value: '3',
+            value: '4',
             label: '异常项目'
           },
           {
-            value: '4',
+            value: '5',
             label: '暂停项目'
           },{
-             value: '5',
+             value: '6',
             label: '失败项目'
           },
           
