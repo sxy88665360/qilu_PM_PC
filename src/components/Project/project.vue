@@ -224,7 +224,8 @@
       }
     },
     mounted: function () {
-      this.searchList()
+      this.searchList();
+      localStorage.setItem("itemData",null);
     },
     methods: {
       formatterEndTime(row){
@@ -236,13 +237,12 @@
       handleClick(data) {
         this.$router.push({
           path: '/projectApplication',
-          query: {
-            itemData: data
-          }
         })
-        console.log(data, "data");
-        console.log(JSON.parse(JSON.stringify(data)), "JSON.parse(JSON.stringify(data))");
-        localStorage.setItem("itemData", JSON.stringify(data));
+        data.subPro = "1";
+        let subData = data
+        //console.log(data, "data");
+        console.log(JSON.parse(JSON.stringify(subData)), "JSON.parse(JSON.stringify(subData))");
+        localStorage.setItem("itemData", JSON.stringify(subData));
       },
       searchList() {
         let data = this.searchCondition
@@ -276,12 +276,13 @@
         }
       },
       projectSchedule(data) {
+        data.subPro = "2";
         this.$router.push({
           path: '/projectSchedule'
         })
-        console.log(data, "projectScheduleData");
-        console.log(JSON.parse(JSON.stringify(data)), "JSON.parse(JSON.stringify(data))");
-        // localStorage.setItem("itemData", JSON.stringify(data));
+        //console.log(data, "projectScheduleData");
+        //console.log(JSON.parse(JSON.stringify(data)), "JSON.parse(JSON.stringify(data))");
+        localStorage.setItem("itemData", JSON.stringify(data));
       }
     }
   }

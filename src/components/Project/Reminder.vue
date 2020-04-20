@@ -6,7 +6,7 @@
       <div class="content">
           <div class='tableList'>
             <el-table :data='tableData' height="450" border style='width: 100%'>
-                <el-table-column fixed type='index' label='序号' align='center' width='50'></el-table-column>
+                <!-- <el-table-column fixed type='index' label='序号' align='center' width='50'></el-table-column> -->
                 <el-table-column prop='number' label='项目编号' ></el-table-column>
                 <el-table-column prop='category' label='项目类别' ></el-table-column>
                 <el-table-column prop='name' label='项目名称' ></el-table-column>
@@ -35,7 +35,7 @@ import * as Urls from '@/components/url'
 export default {
     data() {
         return {
-            tableData:[],
+            tableData:null,
             dataUrl: Urls.dataUrl,
         }
     },
@@ -54,31 +54,27 @@ export default {
                     `/projectApi/reminder?time=${timestamp}`,
                 )
                 .then((response) => {
-                if (response.data.code === 1) {
-                    let data = response.data.data
-                    // data.forEach((item, index) => {
-                    //     item.index = index + 1;
-                    // });
-                    // console.log(data, 'data')
-                    that.tableData = data
-                }
+                    console.log(response,"response")
+                    if (response.data.code == "1") {
+                        let dataList = response.data.data
+                        that.tableData = dataList;
+                        console.log(that.tableData,"tableDate")
+                    }
                 })
                 .catch((error) => {
                     console.log(error)
                 })
         },
         handleClick (data) {
-            // console.log(itemId,'itemId');
             this.$router.push({
                 path: '/projectApplication',
-                query: { itemData: data }
             })
-            localStorage.setItem("itemId", data);
+            data.subPro = "1";
+            localStorage.setItem("itemData", JSON.stringify(data));
         },
     }
 }
 </script>
-
 <style lang="scss" scoped>
 .progress{
     header{

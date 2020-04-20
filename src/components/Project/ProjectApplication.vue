@@ -232,6 +232,7 @@
     },
     data() {
       return {
+        itemData:null,
         isDelay:false,
         editList:false,
         dbUrl:'',
@@ -378,15 +379,17 @@
       }
     },
     mounted() {
-      let itemData = JSON.parse(localStorage.getItem('itemData'));
-      console.log(itemData,"itemData");
-      if (this.$route.query.itemData) {
+      this.itemData = JSON.parse(localStorage.getItem('itemData'));
+      console.log(this.itemData,"itemData");
+      if (this.itemData.subPro === "1") {
         this.isView = true
         //this.projectForm  = this.$route.query.itemData;
-         this.projectForm  = this.$route.query.itemData;
+         this.projectForm  = this.itemData;
         console.log(this.projectForm,'处于编辑状态');
         // console.log(this.projectForm,'projectForm')
-      } else {
+      } else if(this.itemData.subPro === "2"){
+        console.log(this.projectForm,'项目简报提报');
+      }else {
         this.isView = false
       }
     },
@@ -495,8 +498,10 @@
         this.$router.push({
           path: '/'
         }) // 返回首页
+         localStorage.setItem("itemData",null);
       },
       addProjectList() {
+         
         var that = this
         var data = this.projectForm;
         
@@ -537,6 +542,7 @@
           .catch(err => {
             console.log(err)
           })
+          localStorage.setItem("itemData",null);
       },
       addProgress() {
         // this.isAddprogress = !this.isAddprogress
