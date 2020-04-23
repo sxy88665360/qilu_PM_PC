@@ -13,6 +13,13 @@
         <el-input v-model='projectForm.number' class='listStyle' size='small' placeholder='请输入项目名称'></el-input>
       </div>
       <div class='formList'>
+        <span class='text'>项目状态：</span>
+        <el-select v-model='projectForm.projectStatus' placeholder='项目状态' size='small'>
+          <el-option v-for='item in projectStatus' :key='item.value' :label='item.label' :value='item.value' >
+          </el-option>
+        </el-select>
+      </div>
+      <div class='formList'>
         <span class='text'>立项部门：</span>
         <treeselect v-model='department' class='listStyle' :multiple='true' :options='options' placeholder='请输入立项部门'/>
       </div>
@@ -275,7 +282,7 @@
           progress: [], // 项目进度
           department: '', // 立项部门
           proposer: '', // 申请人
-          projectStatus: null // 项目状态
+          projectStatus: "3" // 项目状态
         },
         options: [{
             id: '1',
@@ -376,20 +383,47 @@
             label: '总经理办公室'
           }
         ],
+        projectStatus: [{
+            value: '1',
+            label: '已完成项目'
+          },{
+            value: '2',
+            label: '已奖励项目'
+          },{
+            value: '3',
+            label: '正在进行'
+          },
+          {
+            value: '4',
+            label: '异常项目'
+          },
+          {
+            value: '5',
+            label: '暂停项目'
+          },{
+             value: '6',
+            label: '失败项目'
+          },
+          
+        ],
       }
     },
     mounted() {
       this.itemData = JSON.parse(localStorage.getItem('itemData'));
       console.log(this.itemData,"itemData");
-      if (this.itemData.subPro === "1") {
-        this.isView = true
-        //this.projectForm  = this.$route.query.itemData;
-         this.projectForm  = this.itemData;
-        console.log(this.projectForm,'处于编辑状态');
-        // console.log(this.projectForm,'projectForm')
-      } else if(this.itemData.subPro === "2"){
-        console.log(this.projectForm,'项目简报提报');
-      }else {
+      if(this.itemData) {
+        if ( this.itemData.subPro === "1") {
+          this.isView = true
+          //this.projectForm  = this.$route.query.itemData;
+          this.projectForm  = this.itemData;
+          console.log(this.projectForm,'处于编辑状态');
+          // console.log(this.projectForm,'projectForm')
+        } else if(this.itemData.subPro && this.itemData.subPro === "2"){
+          this.projectForm  = this.itemData;
+          console.log(this.projectForm,'项目简报提报');
+        }
+      }
+      else {
         this.isView = false
       }
     },

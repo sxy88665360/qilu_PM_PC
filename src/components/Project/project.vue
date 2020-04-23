@@ -33,7 +33,7 @@
         <div class='searchItem'>
           <div class='searchInput'>
             <!-- <el-input v-model='searchCondition.projectStatus'  size='small' placeholder='项目状态' ></el-input> -->
-            <el-select v-model='searchCondition.projectStatus' placeholder='项目状态' size='small'>
+            <el-select v-model='searchCondition.projectStatus' placeholder='项目状态' size='small' clearable>
               <el-option v-for='item in projectStatus' :key='item.value' :label='item.label' :value='item.value'>
               </el-option>
             </el-select>
@@ -54,7 +54,7 @@
         <el-table-column prop='number' label='项目编号'></el-table-column>
         <el-table-column prop='category' label='项目类别'></el-table-column>
         <el-table-column prop='name' label='项目名称'></el-table-column>
-        <!-- <el-table-column prop='target' label='项目目标' width='120'></el-table-column> -->
+        <el-table-column prop='projectStatus' label='项目状态' width='120' :formatter="formatterStatus"></el-table-column>
         <el-table-column prop='planTime' label='完成期限' :formatter="formatterEndTime"></el-table-column>
         <!-- <el-table-column prop='expectedReturn' label='预期收益' width='120'></el-table-column> -->
         <el-table-column prop='manager' label='项目经理'></el-table-column>
@@ -234,6 +234,14 @@
           return moment(time).format('YYYY-MM-DD');
         }
       },
+      formatterStatus(row){
+        if (row.projectStatus == "1") return "已完成" 
+        if (row.projectStatus == "2") return "已奖励" 
+        if (row.projectStatus == "3") return "正在进行" 
+        if (row.projectStatus == "4") return "异常项目" 
+        if (row.projectStatus == "5") return "暂停项目" 
+        if (row.projectStatus == "5") return "失败项目" 
+      },
       handleClick(data) {
         this.$router.push({
           path: '/projectApplication',
@@ -278,11 +286,12 @@
       projectSchedule(data) {
         data.subPro = "2";
         this.$router.push({
-          path: '/projectSchedule'
+          path: '/projectApplication'
         })
         //console.log(data, "projectScheduleData");
         //console.log(JSON.parse(JSON.stringify(data)), "JSON.parse(JSON.stringify(data))");
         localStorage.setItem("itemData", JSON.stringify(data));
+
       }
     }
   }
