@@ -309,7 +309,7 @@
 
       .searchCondition {
         position: absolute;
-        z-index: 10000;
+        z-index: 1000;
         background-color: #ebf8f7;
 
         .searchItem {

@@ -417,6 +417,9 @@
           //this.projectForm  = this.$route.query.itemData;
           this.projectForm  = this.itemData;
           console.log(this.projectForm,'处于编辑状态');
+          let depArr = [];
+          depArr.push(this.itemData.department);
+          this.department = depArr;
           // console.log(this.projectForm,'projectForm')
         } else if(this.itemData.subPro && this.itemData.subPro === "2"){
           this.projectForm  = this.itemData;
@@ -434,7 +437,6 @@
       //     console.log(dataNum,"当前日期时间戳")
       //     if(dataNum > )
       //   }
-        
       // },
       calculationDelay(){
         console.log("计算拖延时间")
@@ -538,10 +540,11 @@
          
         var that = this
         var data = this.projectForm;
-        
+        console.log(this.department,"this.department");
         if(this.isView){
            this.dbUrl = '/projectApi/edit'
-           data.department = this.department;
+           data.department = this.department[0];
+           
         }
         else {
           this.dbUrl = '/projectApi/new'
