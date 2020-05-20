@@ -4,72 +4,74 @@
       <div class="title">{{isView?'查看项目':'项目申请——新增'}}</div>
     </div>
     <div class='content'>
-      <div class='formList'>
-        <span class='text'>项目名称：</span>
-        <el-input v-model='projectForm.name' class='listStyle' size='small' placeholder='请输入项目名称'></el-input>
-      </div>
-      <div class='formList'>
-        <span class='text'>项目编号：</span>
-        <el-input v-model='projectForm.number' class='listStyle' size='small' placeholder='请输入项目名称'></el-input>
-      </div>
-      <div class='formList'>
-        <span class='text'>项目状态：</span>
-        <el-select v-model='projectForm.projectStatus' placeholder='项目状态' size='small'>
-          <el-option v-for='item in projectStatus' :key='item.value' :label='item.label' :value='item.value' >
-          </el-option>
-        </el-select>
-      </div>
-      <div class='formList'>
-        <span class='text'>立项部门：</span>
-        <treeselect v-model='department' class='listStyle' :multiple='true' :options='options' placeholder='请输入立项部门'/>
-      </div>
-      <div class='formList'>
-        <span class='text'>项目类别：</span>
-        <el-radio v-model='projectForm.category' label='改造项目'>改造项目</el-radio>
-        <el-radio v-model='projectForm.category' label='工艺革新项目'>工艺革新项目</el-radio>
-        <el-radio v-model='projectForm.category' label='安舜重点工作项目'>安舜重点工作项目</el-radio>
-        <el-radio v-model='projectForm.category' label='申请政府奖补资金及专项税免项目'>申请政府奖补资金及专项税免项目</el-radio>
-        <el-radio v-model='projectForm.category' label='专利申请'>专利申请</el-radio>
-        <el-radio v-model='projectForm.category' label='其他项目'>其他项目</el-radio>
-      </div>
-      <div class='formList'>
-        <span class='text'>计划投资总额：</span>
-        <el-input v-model='projectForm.totalInvestment' class='listStyle' size='small' placeholder='请输入计划投资总额'>
-        </el-input>
-      </div>
-      <div class='formList'>
-        <span class='text'>预期收益：</span>
-        <el-input v-model='projectForm.expectedReturn' class='listStyle' size='small' placeholder='请输入预期收益'></el-input>
-      </div>
-      <div class='formList'>
-        <span class='text'>项目背景：</span>
-        <el-input v-model='projectForm.backGround' class='listStyle' size='small' placeholder='请输入项目背景' 
-        type="textarea" :rows="1"></el-input>
-      </div>
-      <div class='formList'>
-        <span class='text'>项目目标：</span>
-        <el-input v-model='projectForm.target' class='listStyle' size='small' placeholder='请输入项目目标'
-        type="textarea" :rows="1"></el-input>
-      </div>
-      <div class='formList'>
-        <span class='text'>计划完成时间：</span>
-        <el-date-picker v-model="projectForm.planTime" class='listStyle' type="date" placeholder="选择日期" value-format="timestamp"> </el-date-picker>
-      </div>
-      <div class='formList'>
-        <span class='text'>项目经理：</span>
-        <el-input v-model='projectForm.manager' class='listStyle' size='small' placeholder='请输入项目经理'></el-input>
-      </div>
-      <div class='formList'>
-        <span class='text'>核心人员：</span>
-        <el-input v-model='projectForm.corePersonnel' class='listStyle' size='small' placeholder='请输入核心人员'></el-input>
-      </div>
-      <div class='formList'>
-        <span class='text'>主要人员：</span>
-        <el-input v-model='projectForm.keyPersonnel' class='listStyle' size='small' placeholder='请输入主要人员'></el-input>
-      </div>
-      <div class='formList'>
-        <span class='text'>申请人：</span>
-        <el-input v-model='projectForm.proposer' class='listStyle' size='small' placeholder='请输入申请人'></el-input>
+      <div class="showInfo" v-if="!itemData||itemData.subPro==='1'">
+        <div class='formList' >
+          <span class='text'>项目名称：</span>
+          <el-input v-model='projectForm.name' class='listStyle' size='small' placeholder='请输入项目名称'></el-input>
+        </div>
+        <div class='formList'>
+          <span class='text'>项目编号：</span>
+          <el-input v-model='projectForm.number' class='listStyle' size='small' placeholder='请输入项目名称'></el-input>
+        </div>
+        <div class='formList'>
+          <span class='text'>项目状态：</span>
+          <el-select v-model='projectForm.projectStatus' placeholder='项目状态' size='small'>
+            <el-option v-for='item in projectStatus' :key='item.value' :label='item.label' :value='item.value'>
+            </el-option>
+          </el-select>
+        </div>
+        <div class='formList'>
+          <span class='text'>立项部门：</span>
+          <treeselect v-model='department' class='listStyle' :multiple='true' :options='options' placeholder='请输入立项部门'/>
+        </div>
+        <div class='formList'>
+          <span class='text'>项目类别：</span>
+          <el-radio v-model='projectForm.category' label='改造项目'>改造项目</el-radio>
+          <el-radio v-model='projectForm.category' label='工艺革新项目'>工艺革新项目</el-radio>
+          <el-radio v-model='projectForm.category' label='安舜重点工作项目'>安舜重点工作项目</el-radio>
+          <el-radio v-model='projectForm.category' label='申请政府奖补资金及专项税免项目'>申请政府奖补资金及专项税免项目</el-radio>
+          <el-radio v-model='projectForm.category' label='专利申请'>专利申请</el-radio>
+          <el-radio v-model='projectForm.category' label='其他项目'>其他项目</el-radio>
+        </div>
+        <div class='formList'>
+          <span class='text'>计划投资总额：</span>
+          <el-input v-model='projectForm.totalInvestment' class='listStyle' size='small' placeholder='请输入计划投资总额'>
+          </el-input>
+        </div>
+        <div class='formList'>
+          <span class='text'>预期收益：</span>
+          <el-input v-model='projectForm.expectedReturn' class='listStyle' size='small' placeholder='请输入预期收益'></el-input>
+        </div>
+        <div class='formList'>
+          <span class='text'>项目背景：</span>
+          <el-input v-model='projectForm.backGround' class='listStyle' size='small' placeholder='请输入项目背景' 
+          type="textarea" :rows="1"></el-input>
+        </div>
+        <div class='formList'>
+          <span class='text'>项目目标：</span>
+          <el-input v-model='projectForm.target' class='listStyle' size='small' placeholder='请输入项目目标'
+          type="textarea" :rows="1"></el-input>
+        </div>
+        <div class='formList'>
+          <span class='text'>计划完成时间：</span>
+          <el-date-picker v-model="projectForm.planTime" class='listStyle' type="date" placeholder="选择日期" value-format="timestamp"> </el-date-picker>
+        </div>
+        <div class='formList'>
+          <span class='text'>项目经理：</span>
+          <el-input v-model='projectForm.manager' class='listStyle' size='small' placeholder='请输入项目经理'></el-input>
+        </div>
+        <div class='formList'>
+          <span class='text'>核心人员：</span>
+          <el-input v-model='projectForm.corePersonnel' class='listStyle' size='small' placeholder='请输入核心人员'></el-input>
+        </div>
+        <div class='formList'>
+          <span class='text'>主要人员：</span>
+          <el-input v-model='projectForm.keyPersonnel' class='listStyle' size='small' placeholder='请输入主要人员'></el-input>
+        </div>
+        <div class='formList'>
+          <span class='text'>申请人：</span>
+          <el-input v-model='projectForm.proposer' class='listStyle' size='small' placeholder='请输入申请人'></el-input>
+        </div>
       </div>
       <div class='formList progress'>
         <span class='text'>项目章程：</span>
@@ -412,8 +414,8 @@
       this.itemData = JSON.parse(localStorage.getItem('itemData'));
       console.log(this.itemData,"itemData");
       if(this.itemData) {
-        if ( this.itemData.subPro === "1") {
-          this.isView = true
+        if ( this.itemData.subPro === "1" || this.itemData.subPro ==="2") {
+          this.isView = true;
           //this.projectForm  = this.$route.query.itemData;
           this.projectForm  = this.itemData;
           console.log(this.projectForm,'处于编辑状态');
@@ -540,7 +542,8 @@
          
         var that = this
         var data = this.projectForm;
-        console.log(this.department,"this.department");
+        data.subTime = Number(new Date());
+        // console.log(this.department,"this.department");
         if(this.isView){
            this.dbUrl = '/projectApi/edit'
            data.department = this.department[0];
@@ -550,14 +553,13 @@
           this.dbUrl = '/projectApi/new'
            data.department = this.department[0];
         }
-            
+        
         this.axios
           .post(this.dataUrl + this.dbUrl, data)
           .then(response => {
             if (response.data.code === 1) {
               // element 弹出
               // 跳转页面
-
               if(that.isView){
                 that.$message({
                   message: '项目修改成功',

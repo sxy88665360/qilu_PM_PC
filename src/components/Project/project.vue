@@ -61,6 +61,7 @@
         <!-- <el-table-column prop='corePersonnel' label='核心成员' width='120'></el-table-column>
         <el-table-column prop='keyPersonnel' label='主要成员' width='120'></el-table-column> -->
         <!-- <el-table-column prop='progress' label='项目进度' width='120'></el-table-column> -->
+        <el-table-column prop='subTime' label='提交时间' :formatter="formatterSubTime"></el-table-column>
         <el-table-column fixed='right' label='操作' width='200'>
           <template slot-scope='scope'>
             <el-button @click='handleClick(scope.row)' type='text' size='small'>查看/编辑</el-button>
@@ -234,6 +235,12 @@
           return moment(time).format('YYYY-MM-DD');
         }
       },
+      formatterSubTime(row){
+        let time = row.subTime
+        if(time){
+          return moment(time).format('YYYY-MM-DD');
+        }
+      },
       formatterStatus(row){
         if (row.projectStatus == "1") return "已完成" 
         if (row.projectStatus == "2") return "已奖励" 
@@ -266,7 +273,26 @@
           )
           .then((response) => {
             if (response.data.code === 1) {
-              that.tableData = response.data.data
+              let data = response.data.data
+              data.forEach((item,index) => {
+                data[index].numberAuto = item.number.split('-').join('').slice(2);
+              });
+              // data.numberAuto = data.number.split('-').join('').slice(2);
+              let compare = function (prop) {
+                  return function (obj1, obj2) {
+                      var val1 = obj1[prop];
+                      var val2 = obj2[prop];
+                      if (val1 < val2) {
+                          return -1;
+                      } else if (val1 > val2) {
+                          return 1;
+                      } else {
+                          return 0;
+                      }            
+                  } 
+              }
+              data = data.sort(compare("numberAuto"));
+              that.tableData = data;
             }
           })
           .catch((error) => {
