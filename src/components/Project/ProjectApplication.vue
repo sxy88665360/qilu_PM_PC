@@ -7,11 +7,11 @@
       <div class="showInfo" v-if="!itemData||itemData.subPro==='1'">
         <div class='formList' >
           <span class='text'>项目名称：</span>
-          <el-input v-model='projectForm.name' class='listStyle' size='small' placeholder='请输入项目名称'></el-input>
+          <el-input v-model='projectForm.name' class='listStyle' size='small' placeholder='请输入项目名称' v-bind:disabled="isView" ></el-input>
         </div>
         <div class='formList'>
           <span class='text'>项目编号：</span>
-          <el-input v-model='projectForm.number' class='listStyle' size='small' placeholder='请输入项目名称'></el-input>
+          <el-input v-model='projectForm.number' class='listStyle' size='small' placeholder='请输入项目编号' v-bind:disabled="isView"></el-input>
         </div>
         <div class='formList'>
           <span class='text'>项目状态：</span>
@@ -20,13 +20,17 @@
             </el-option>
           </el-select>
         </div>
+        <div class='formList' v-if="projectForm.projectStatus == 2">
+          <span class='text'>奖励金额：</span>
+          <el-input v-model='projectForm.prize' class='listStyle' size='small' v-bind:disabled="true"></el-input>
+        </div>
         <div class='formList'>
           <span class='text'>立项部门：</span>
-          <treeselect v-model='department' class='listStyle' :multiple='true' :options='options' placeholder='请输入立项部门'/>
+          <treeselect v-model='department' class='listStyle' :multiple='true' :options='options' placeholder='请输入立项部门' v-bind:disabled="isView"/>
         </div>
         <div class='formList'>
           <span class='text'>项目类别：</span>
-          <el-radio v-model='projectForm.category' label='改造项目'>改造项目</el-radio>
+          <el-radio v-model='projectForm.category' label='改造项目' >改造项目</el-radio>
           <el-radio v-model='projectForm.category' label='工艺革新项目'>工艺革新项目</el-radio>
           <el-radio v-model='projectForm.category' label='安舜重点工作项目'>安舜重点工作项目</el-radio>
           <el-radio v-model='projectForm.category' label='申请政府奖补资金及专项税免项目'>申请政府奖补资金及专项税免项目</el-radio>
@@ -54,23 +58,23 @@
         </div>
         <div class='formList'>
           <span class='text'>计划完成时间：</span>
-          <el-date-picker v-model="projectForm.planTime" class='listStyle' type="date" placeholder="选择日期" value-format="timestamp"> </el-date-picker>
+          <el-date-picker v-model="projectForm.planTime" class='listStyle' type="date" placeholder="选择日期" value-format="timestamp" v-bind:disabled="isView"> </el-date-picker>
         </div>
         <div class='formList'>
           <span class='text'>项目经理：</span>
-          <el-input v-model='projectForm.manager' class='listStyle' size='small' placeholder='请输入项目经理'></el-input>
+          <el-input v-model='projectForm.manager' class='listStyle' size='small' placeholder='请输入项目经理' v-bind:disabled="isView"></el-input>
         </div>
         <div class='formList'>
           <span class='text'>核心人员：</span>
-          <el-input v-model='projectForm.corePersonnel' class='listStyle' size='small' placeholder='请输入核心人员'></el-input>
+          <el-input v-model='projectForm.corePersonnel' class='listStyle' size='small' placeholder='请输入核心人员' v-bind:disabled="isView"></el-input>
         </div>
         <div class='formList'>
           <span class='text'>主要人员：</span>
-          <el-input v-model='projectForm.keyPersonnel' class='listStyle' size='small' placeholder='请输入主要人员'></el-input>
+          <el-input v-model='projectForm.keyPersonnel' class='listStyle' size='small' placeholder='请输入主要人员' v-bind:disabled="isView"></el-input>
         </div>
         <div class='formList'>
           <span class='text'>申请人：</span>
-          <el-input v-model='projectForm.proposer' class='listStyle' size='small' placeholder='请输入申请人'></el-input>
+          <el-input v-model='projectForm.proposer' class='listStyle' size='small' placeholder='请输入申请人' v-bind:disabled="isView"></el-input>
         </div>
       </div>
       <div class='formList progress'>
@@ -284,7 +288,8 @@
           progress: [], // 项目进度
           department: '', // 立项部门
           proposer: '', // 申请人
-          projectStatus: "3" // 项目状态
+          projectStatus: "", // 项目状态
+          prize: null, // 奖励金额
         },
         options: [{
             id: '1',
@@ -441,23 +446,23 @@
       //   }
       // },
       calculationDelay(){
-        console.log("计算拖延时间")
+        // console.log("计算拖延时间")
         // 开始时间推迟
         if(Number(this.proForm.realStartTime) > Number(this.proForm.startTime)) {
           this.isDelay = true;
-          console.log(Number(this.proForm.realStartTime),Number(this.proForm.startTime),"开始时间yanqi")
+          //console.log(Number(this.proForm.realStartTime),Number(this.proForm.startTime),"开始时间yanqi")
         }
         else if(Number(this.proForm.realEndTime) > Number(this.proForm.endTime)){
           this.isDelay = true;
-          console.log(Number(this.proForm.realEndTime),Number(this.proForm.endTime),"完成时间yanqi")
+          //console.log(Number(this.proForm.realEndTime),Number(this.proForm.endTime),"完成时间yanqi")
         }
-        else if((Date.parse(new Date()) > Number(this.proForm.endTime))&&this.proForm.isEnd =='2'){ // 截止当前未完成
+        else if((Date.parse(new Date()) > Number(this.proForm.endTime))){ // 截止当前未完成
           this.isDelay = true;
           console.log((Date.parse(new Date()),Number(this.proForm.endTime),"完成时间yanqi"))
         }
         else if((Date.parse(new Date()) > Number(this.proForm.startTime))&&this.proForm.isStart =='2'){ // 截止当前未完成
           this.isDelay = true;
-          console.log((Date.parse(new Date()),Number(this.proForm.endTime),"完成时间yanqi"))
+          //console.log((Date.parse(new Date()),Number(this.proForm.endTime),"完成时间yanqi"))
         }
         else{
           this.isDelay = false;
@@ -496,6 +501,8 @@
         this.editList = true;
         this.proForm = value;
         this.isAddprogress = !this.isAddprogress;
+        this.calculationDelay();
+        // @change="calculationDelay"
       },
       delProgress(index) {
         console.log(index,"index")
@@ -505,7 +512,6 @@
           type: 'warning'
         }).then(() => {
         console.log(index,"index")
-        // console.log(this.proForm,"index")
           this.projectForm.progress.splice(index, 1);
           // this.$message({
           //   type: 'success',
@@ -523,7 +529,6 @@
           this.editList = false;
         }
         else this.projectForm.progress.push(value);
-        // console.log(this.projectForm,"this.projectForm");
         this.isAddprogress = !this.isAddprogress;
         this.proForm = {}
       },
@@ -542,18 +547,17 @@
          
         var that = this
         var data = this.projectForm;
+        console.log(data,"data");
         data.subTime = Number(new Date());
         // console.log(this.department,"this.department");
         if(this.isView){
            this.dbUrl = '/projectApi/edit'
            data.department = this.department[0];
-           
         }
         else {
           this.dbUrl = '/projectApi/new'
            data.department = this.department[0];
         }
-        
         this.axios
           .post(this.dataUrl + this.dbUrl, data)
           .then(response => {
@@ -603,7 +607,9 @@
 <style lang='scss' scoped>
   .projectApplication {
     border-radius: 5px;
-
+    // .btndisabled{
+    //   disabled:
+    // }
     .header {
       width: 100%;
       background-color: #ebf8f7;
@@ -640,7 +646,7 @@
       border-bottom: 1px solid #ccc;
 
       .listStyle {
-        width: 300px;
+        width: 400px;
         margin-left: 20px;
         display: inline-block;
       }

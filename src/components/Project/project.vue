@@ -33,7 +33,7 @@
         <div class='searchItem'>
           <div class='searchInput'>
             <!-- <el-input v-model='searchCondition.projectStatus'  size='small' placeholder='项目状态' ></el-input> -->
-            <el-select v-model='searchCondition.projectStatus' placeholder='项目状态' size='small' clearable>
+            <el-select v-model='searchCondition.projectStatus' placeholder='项目状态' size='small' @change="searchList" clearable>
               <el-option v-for='item in projectStatus' :key='item.value' :label='item.label' :value='item.value'>
               </el-option>
             </el-select>
@@ -97,9 +97,12 @@
           time: null, // 立项时间
           department: '', // 立项部门
           manager: '', // 项目经理
-          projectStatus: null// 项目状态
+          projectStatus: '3'// 项目状态
         },
         projectStatus: [{
+            value: '',
+            label: '全部项目'
+          },{
             value: '1',
             label: '已完成项目'
           },{
