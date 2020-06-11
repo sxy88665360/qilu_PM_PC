@@ -49,7 +49,7 @@
       </div>
     </header>
     <div class='tableList'>
-      <el-table :data='tableData' height="450" border style='width: 100%'>
+      <el-table :data='tableDataAuto' height="450" border style='width: 100%'>
         <el-table-column fixed type='index' label='序号' align='center' width='50'></el-table-column>
         <el-table-column prop='number' label='项目编号'></el-table-column>
         <el-table-column prop='category' label='项目类别'></el-table-column>
@@ -66,6 +66,7 @@
           <template slot-scope='scope'>
             <el-button @click='handleClick(scope.row)' type='text' size='small'>查看/编辑</el-button>
             <el-button @click='projectSchedule(scope.row)' type='text' size='small'>提交进度</el-button>
+            <el-button @click='subLog(scope.row)' type='text' size='small'>提交记录</el-button>
             <!-- <el-button type='text' size='small'>编辑(暂无)</el-button> -->
           </template>
         </el-table-column>
@@ -224,7 +225,8 @@
             label: '总经理办公室'
           }
         ],
-        tableData: null
+        tableData: null,
+        tableDataAuto:null
       }
     },
     mounted: function () {
@@ -232,6 +234,11 @@
       localStorage.setItem("itemData",null);
     },
     methods: {
+      subLog(row){
+        this.$router.push({
+          path:'/subLog'
+        })
+      },
       formatterEndTime(row){
         let time = row.planTime
         if(time){
@@ -259,13 +266,13 @@
         data.subPro = "1";
         let subData = data
         //console.log(data, "data");
-        console.log(JSON.parse(JSON.stringify(subData)), "JSON.parse(JSON.stringify(subData))");
+        // console.log(JSON.parse(JSON.stringify(subData)), "JSON.parse(JSON.stringify(subData))");
         localStorage.setItem("itemData", JSON.stringify(subData));
       },
       searchList() {
         let data = this.searchCondition
         data.department = this.department
-        console.log(data,"搜索条件");
+        // console.log(data,"搜索条件");
         let that = this
         this.axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
         this.axios
@@ -295,7 +302,7 @@
                   } 
               }
               data = data.sort(compare("numberAuto"));
-              that.tableData = data;
+              that.tableDataAuto = data;
             }
           })
           .catch((error) => {

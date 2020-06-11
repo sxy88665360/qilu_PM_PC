@@ -22,7 +22,7 @@
         </div>
         <div class='formList' v-if="projectForm.projectStatus == 2">
           <span class='text'>奖励金额：</span>
-          <el-input v-model='projectForm.prize' class='listStyle' size='small' v-bind:disabled="true"></el-input>
+          <el-input v-model='projectForm.prize' class='listStyle' size='small' ></el-input>
         </div>
         <div class='formList'>
           <span class='text'>立项部门：</span>
@@ -49,12 +49,12 @@
         <div class='formList'>
           <span class='text'>项目背景：</span>
           <el-input v-model='projectForm.backGround' class='listStyle' size='small' placeholder='请输入项目背景' 
-          type="textarea" :rows="1"></el-input>
+          type="textarea" :rows="4" @change="valueChange"></el-input>
         </div>
         <div class='formList'>
           <span class='text'>项目目标：</span>
           <el-input v-model='projectForm.target' class='listStyle' size='small' placeholder='请输入项目目标'
-          type="textarea" :rows="1"></el-input>
+          type="textarea" :rows="5"></el-input>
         </div>
         <div class='formList'>
           <span class='text'>计划完成时间：</span>
@@ -185,7 +185,6 @@
                 </div>
               </el-form-item>
             </div>
-            
              <div class="orderName orderModityPublic" v-if="proForm.isEnd=='1'">
               <el-form-item label="实际结束时间" prop="realEndTime">
                 <div class="orderInput">
@@ -416,19 +415,19 @@
       }
     },
     mounted() {
-      this.itemData = JSON.parse(localStorage.getItem('itemData'));
-      console.log(this.itemData,"itemData");
+      let msg = this.itemData = JSON.parse(localStorage.getItem('itemData'));
+      // console.log(this.itemData,"itemData");
       if(this.itemData) {
         if ( this.itemData.subPro === "1" || this.itemData.subPro ==="2") {
           this.isView = true;
           //this.projectForm  = this.$route.query.itemData;
-          this.projectForm  = this.itemData;
+          this.projectForm  = JSON.parse(localStorage.getItem('itemData'));
           console.log(this.projectForm,'处于编辑状态');
           let depArr = [];
           depArr.push(this.itemData.department);
           this.department = depArr;
           // console.log(this.projectForm,'projectForm')
-        } else if(this.itemData.subPro && this.itemData.subPro === "2"){
+        } else if(this.itemData.subPro && this.itemData.subPro === "2") {
           this.projectForm  = this.itemData;
           console.log(this.projectForm,'项目简报提报');
         }
@@ -438,16 +437,17 @@
       }
     },
     methods: {
-      // isEndDelay() {
-      //   if(this.proForm.isEnd =='2'){
-      //     let dataNum = Date.parse(new Date());
-      //     console.log(dataNum,"当前日期时间戳")
-      //     if(dataNum > )
-      //   }
-      // },
-      calculationDelay(){
+      valueChange(){
+         console.log(this.itemData,"this.itemData");
+      },
+      calculationDelay(){ // 计算是否延期
         // console.log("计算拖延时间")
         // 开始时间推迟
+        if(this.proForm.isStart == 2){
+          this.proForm.isEnd = '2'
+          this.proForm.realStartTime = null
+          this.proForm.realEndTime = null
+        }
         if(Number(this.proForm.realStartTime) > Number(this.proForm.startTime)) {
           this.isDelay = true;
           //console.log(Number(this.proForm.realStartTime),Number(this.proForm.startTime),"开始时间yanqi")
@@ -544,22 +544,42 @@
          localStorage.setItem("itemData",null);
       },
       addProjectList() {
-         
-        var that = this
-        var data = this.projectForm;
-        console.log(data,"data");
-        data.subTime = Number(new Date());
+        let that = this
+        let data = this.projectForm;
+        // console.log(this.itemData,"this.itemData")
+        // console.log(data,"data");
+        // console.log(JSON.stringify(data),"JSON.stringify");
+        // data.subTime = Number(new Date());
+        // if(JSON.stringify(this.itemData) == JSON.stringify(data)) {
+        //   console.log("xiangtong")
+        //   // this.$message({
+        //   //         showClose: true,
+        //   //         message: '请勿重复提交',
+        //   //         type: 'warning'
+        //   //       }) 
+        // }else{
+        // }
         // console.log(this.department,"this.department");
         if(this.isView){
            this.dbUrl = '/projectApi/edit'
            data.department = this.department[0];
+          // console.log(JSON.stringify(data) ,"data");
+
         }
         else {
-          this.dbUrl = '/projectApi/new'
+           this.dbUrl = '/projectApi/new'
            data.department = this.department[0];
+           data.progress.forEach((item,index)=>{
+             item.subLog = [{
+               subTime:  Number(new Date()),
+               subPro: item.process ? item.process:'新增'
+             }]
+           })
         }
-        this.axios
-          .post(this.dataUrl + this.dbUrl, data)
+        console.log(data,"data");
+        console.log(JSON.stringify(data),"JSON.stringify");
+        // 提交判断
+        this.axios.post(this.dataUrl + this.dbUrl, data)
           .then(response => {
             if (response.data.code === 1) {
               // element 弹出
@@ -838,11 +858,16 @@
           border-bottom: 1px solid #CCCCCC;
 
           & .orderInput {
-            width: 220px;
+            width: 300px;
             display: inline-block;
             margin-left: 20px
           }
-
+          & .el-select{
+            width: 300px;
+          }
+          & .el-input{
+            width: 300px;
+          }
           & .orderInputText {
             width: 270px;
             display: block;

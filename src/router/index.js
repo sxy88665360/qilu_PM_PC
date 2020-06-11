@@ -5,6 +5,7 @@ import Project from '@/components/Project/project' // 项目
 import ProjectApplication from '@/components/Project/ProjectApplication'
 import Progress from '@/components/Project/Progress'
 import ProjectSchedule from '@/components/Project/ProjectSchedule'
+import SubLog from '@/components/Project/SubLog'
 import Reminder from '@/components/Project/reminder' // 事项提醒
 import UserSettings from '@/components/UserSettings/userSettings' // 用户设置
 import Login from '@/components/Login' // 登录
@@ -40,6 +41,10 @@ export default new Router({
         {
           path: '/reminder',
           component: Reminder
+        },
+        {
+          path: '/subLog',
+          component: SubLog
         },
         {
           path: '/userSettings',
