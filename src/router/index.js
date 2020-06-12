@@ -44,7 +44,8 @@ export default new Router({
         },
         {
           path: '/subLog',
-          component: SubLog
+          component: SubLog,
+          name:SubLog
         },
         {
           path: '/userSettings',

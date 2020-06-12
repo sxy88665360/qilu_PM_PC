@@ -4,48 +4,17 @@
       <div class="boom">
         <div class="header">
           <div class="title">
-            日志记录
+            <i class="text">日志记录</i>
+            <i class="el-icon-circle-close closeBtn" @click="closeMask"></i>
           </div>
         </div>
         <div class="content">
-            <!-- <div class="listTD">
-              <el-table :data="dataList" border style="width: 100%" :default-sort = "{prop: 'supTime'}">
-                <el-table-column
-                  prop="subTime"
-                  align="center"
-                  width="180"
-                  :formatter="formatterTime"
-                  label="提交时间">
-                </el-table-column>
-                <el-table-column
-                  prop="subPro"
-                  align="center"
-                  :formatter="formatterTime"
-                  label='事项进展'>
-                </el-table-column>
-               
-              </el-table>
-              
-            </div> -->
              <div class="block">
-              
-              <el-timeline>
-                <el-timeline-item timestamp="data.subTime" v-for="(data, index) in dataList" placement="top" >
+              <el-timeline :reverse='true'>
+                <el-timeline-item :timestamp="formatterTime(data.subTime)" v-for="(data, index) in dataList" placement="top" :key="index" >
                   <el-card>
                     <h4>{{data.subPro}}</h4>
-                    <p>王小虎 提交于 2018/4/12 20:46</p>
-                  </el-card>
-                </el-timeline-item>
-                <el-timeline-item timestamp="2018/4/3" placement="top">
-                  <el-card>
-                    <h4>更新 Github 模板</h4>
-                    <p>王小虎 提交于 2018/4/3 20:46</p>
-                  </el-card>
-                </el-timeline-item>
-                <el-timeline-item timestamp="2018/4/2" placement="top">
-                  <el-card>
-                    <h4>更新 Github 模板</h4>
-                    <p>王小虎 提交于 2018/4/2 20:46</p>
+                    <!-- <p>王小虎 提交于{{formatterTime(data.subTime)}}</p> -->
                   </el-card>
                 </el-timeline-item>
               </el-timeline>
@@ -56,16 +25,57 @@
   </div>
 </template>
 <script>
-
+import moment from 'moment'
 export default {
     data() {
       return {
-        dataList:[]
+        dataList:[
+          {
+            subTime:1122222220,
+            subPro:"新增"
+          },
+          {
+            subTime:1222222221,
+            subPro:"新增2"
+          },
+          {
+            subTime:1322222222,
+            subPro:"新增3"
+          },
+          {
+            subTime:1422222223,
+            subPro:"新增4"
+          },
+          {
+            subTime:1522222224,
+            subPro:"新增2"
+          },
+          {
+            subTime:1622222225,
+            subPro:"新增2"
+          },
+          {
+            subTime:1722222226,
+            subPro:"新增2"
+          },
+          {
+            subTime:1822222227,
+            subPro:"新增2"
+          }
+        ]
       }
     },
-    mounted:{},
-    methods(){
-
+    mounted(){
+      console.log()
+     this.dataList = this.$route.query.dataList;
+    },
+    methods:{
+      formatterTime(time) {
+        return moment(time).format('YYYY-MM-DD');
+      },
+      closeMask(){
+        this.$router.back()
+      }
     }
 }
 </script>
@@ -80,7 +90,7 @@ export default {
     align-items: center;
     & .boom{
       width: 100%;
-          height: calc(100% - 100px);
+          height: calc(100% - 200px);
           margin: 80px 300px 80px 300px;
           border:1px solid #ccc;
           border-radius: 4px;
@@ -90,18 +100,31 @@ export default {
     }
   }
   .header{
+   
     .title{
+     // position: relative;
       height: 40px;
       background-color: #999;
       line-height: 40px;
       font-size: 16px;
       text-align: center;
+      .text{
+        display: inline-block;
+
+      }
+      .closeBtn{
+      // position: fixed;
+      float: right;
+      margin: 10px 20px;
+      // margin-left: 500px;
     }
+    }
+   
   }
   .content{
-    .listTD{
-      margin: 10px 20px;
-    }
+    height: calc(100% - 100px);
+    margin: 30px;
+    overflow: auto;
   }
 }
 </style>

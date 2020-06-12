@@ -66,7 +66,7 @@
           <template slot-scope='scope'>
             <el-button @click='handleClick(scope.row)' type='text' size='small'>查看/编辑</el-button>
             <el-button @click='projectSchedule(scope.row)' type='text' size='small'>提交进度</el-button>
-            <el-button @click='subLog(scope.row)' type='text' size='small'>提交记录</el-button>
+            <!-- <el-button @click='subLog(scope.row)' type='text' size='small'>提交记录</el-button> -->
             <!-- <el-button type='text' size='small'>编辑(暂无)</el-button> -->
           </template>
         </el-table-column>
@@ -98,7 +98,8 @@
           time: null, // 立项时间
           department: '', // 立项部门
           manager: '', // 项目经理
-          projectStatus: '3'// 项目状态
+          projectStatus: '3', // 项目状态
+          eventType:'1'
         },
         projectStatus: [{
             value: '',

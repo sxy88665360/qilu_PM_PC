@@ -1,20 +1,20 @@
 <template>
   <div class='projectApplication'>
     <div class="header">
-      <div class="title">{{isView?'查看项目':'项目申请——新增'}}</div>
+      <div class="title">{{isView?'查看':'新增'}}</div>
     </div>
     <div class='content'>
       <div class="showInfo" v-if="!itemData||itemData.subPro==='1'">
         <div class='formList' >
-          <span class='text'>项目名称：</span>
+          <span class='text'>{{isProject ? "项目名称" : '事项名称'}}</span>
           <el-input v-model='projectForm.name' class='listStyle' size='small' placeholder='请输入项目名称' v-bind:disabled="isView" ></el-input>
         </div>
-        <div class='formList'>
+        <div class='formList' v-if="isProject">
           <span class='text'>项目编号：</span>
           <el-input v-model='projectForm.number' class='listStyle' size='small' placeholder='请输入项目编号' v-bind:disabled="isView"></el-input>
         </div>
         <div class='formList'>
-          <span class='text'>项目状态：</span>
+          <span class='text'>{{isProject ? "项目状态" : '事项状态'}}</span>
           <el-select v-model='projectForm.projectStatus' placeholder='项目状态' size='small'>
             <el-option v-for='item in projectStatus' :key='item.value' :label='item.label' :value='item.value'>
             </el-option>
@@ -24,11 +24,11 @@
           <span class='text'>奖励金额：</span>
           <el-input v-model='projectForm.prize' class='listStyle' size='small' ></el-input>
         </div>
-        <div class='formList'>
+        <div class='formList' >
           <span class='text'>立项部门：</span>
           <treeselect v-model='department' class='listStyle' :multiple='true' :options='options' placeholder='请输入立项部门' v-bind:disabled="isView"/>
         </div>
-        <div class='formList'>
+        <div class='formList'  v-if="isProject">
           <span class='text'>项目类别：</span>
           <el-radio v-model='projectForm.category' label='改造项目' >改造项目</el-radio>
           <el-radio v-model='projectForm.category' label='工艺革新项目'>工艺革新项目</el-radio>
@@ -37,12 +37,12 @@
           <el-radio v-model='projectForm.category' label='专利申请'>专利申请</el-radio>
           <el-radio v-model='projectForm.category' label='其他项目'>其他项目</el-radio>
         </div>
-        <div class='formList'>
+        <div class='formList'  v-if="isProject">
           <span class='text'>计划投资总额：</span>
           <el-input v-model='projectForm.totalInvestment' class='listStyle' size='small' placeholder='请输入计划投资总额'>
           </el-input>
         </div>
-        <div class='formList'>
+        <div class='formList'  v-if="isProject">
           <span class='text'>预期收益：</span>
           <el-input v-model='projectForm.expectedReturn' class='listStyle' size='small' placeholder='请输入预期收益'></el-input>
         </div>
@@ -64,21 +64,21 @@
           <span class='text'>项目经理：</span>
           <el-input v-model='projectForm.manager' class='listStyle' size='small' placeholder='请输入项目经理' v-bind:disabled="isView"></el-input>
         </div>
-        <div class='formList'>
+        <div class='formList'  v-if="isProject">
           <span class='text'>核心人员：</span>
           <el-input v-model='projectForm.corePersonnel' class='listStyle' size='small' placeholder='请输入核心人员' v-bind:disabled="isView"></el-input>
         </div>
-        <div class='formList'>
+        <div class='formList'  v-if="isProject">
           <span class='text'>主要人员：</span>
           <el-input v-model='projectForm.keyPersonnel' class='listStyle' size='small' placeholder='请输入主要人员' v-bind:disabled="isView"></el-input>
         </div>
-        <div class='formList'>
+        <div class='formList'  v-if="isProject">
           <span class='text'>申请人：</span>
           <el-input v-model='projectForm.proposer' class='listStyle' size='small' placeholder='请输入申请人' v-bind:disabled="isView"></el-input>
         </div>
       </div>
       <div class='formList progress'>
-        <span class='text'>项目章程：</span>
+        <span class='text'>里程碑计划：</span>
         <div class="btn">
           <el-button type='primary' size='medium' class='Btn_2' @click='addProgress'>添加分项</el-button>
         </div>
@@ -97,8 +97,9 @@
             <el-table-column prop='unDoneReason' label='延期原因'></el-table-column>
             <el-table-column fixed='right' label='操作' width='120'>
               <template slot-scope='scope'>
-                <el-button type="primary" icon="el-icon-edit" circle @click='editProgress(scope.row)'></el-button>
-                <el-button type="danger" icon="el-icon-delete" circle    @click='delProgress(scope.$index)'></el-button>
+                <el-button type="primary" icon="el-icon-edit" circle @click='editProgress(scope.row)'>编辑</el-button>
+                <el-button type="danger" icon="el-icon-delete" circle    @click='delProgress(scope.$index)'>删除</el-button>
+                <el-button type="info" icon="el-icon-message" circle    @click='subLog(scope.row)'>提交记录</el-button>
                 <!-- <el-button  type='text' size='small'>修改</el-button>
                 <el-button type='text' size='small'>删除</el-button> -->
               </template>
@@ -239,11 +240,27 @@
   import '@riophae/vue-treeselect/dist/vue-treeselect.css'
   import * as Urls from '@/components/url'
   export default {
+    beforeRouteEnter(to, from, next) {
+        console.log(from.path,"from");
+        next(vm => {
+           if(from.path === '/'){
+            vm.eventType = '1';
+            console.log(vm.eventType,"vm.eventType");
+            // sessionStorage.setItem("eventType", vm.eventType);
+            }else if(from.path === '/importMatter'){
+              vm.eventType = '2';
+            }
+            sessionStorage.setItem("eventType", vm.eventType)
+            vm.judge();
+        });
+    },
     components: {
       Treeselect
     },
     data() {
       return {
+        isProject: true,
+        eventType: '1', // 事项类型
         itemData:null,
         isDelay:false,
         editList:false,
@@ -415,6 +432,7 @@
       }
     },
     mounted() {
+      console.log(this.eventType,"mounted");
       let msg = this.itemData = JSON.parse(localStorage.getItem('itemData'));
       // console.log(this.itemData,"itemData");
       if(this.itemData) {
@@ -437,6 +455,21 @@
       }
     },
     methods: {
+      judge() {
+        console.log(this.eventType,"this.eventType ")
+        this.eventType = sessionStorage.getItem("eventType")
+        if(this.eventType == '1'){
+          //console.log('项目');
+          this.isProject = true;
+        }else if(this.eventType == '2') {
+          //console.log('督办')
+          this.isProject = false;
+        }
+      },
+      subLog(data){
+        // console.log(data);
+        this.$router.push({path:'/subLog',query:{dataList:data.subLog}})
+      },
       valueChange(){
          console.log(this.itemData,"this.itemData");
       },
@@ -505,13 +538,13 @@
         // @change="calculationDelay"
       },
       delProgress(index) {
-        console.log(index,"index")
+        console.log(index,"index");
         this.$confirm('删除该文件, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-        console.log(index,"index")
+          console.log(index,"index");
           this.projectForm.progress.splice(index, 1);
           // this.$message({
           //   type: 'success',
@@ -562,6 +595,7 @@
         // console.log(this.department,"this.department");
         if(this.isView){
            this.dbUrl = '/projectApi/edit'
+           data.eventType = this.eventType
            data.department = this.department[0];
           // console.log(JSON.stringify(data) ,"data");
 
@@ -569,6 +603,7 @@
         else {
            this.dbUrl = '/projectApi/new'
            data.department = this.department[0];
+           data.eventType = this.eventType
            data.progress.forEach((item,index)=>{
              item.subLog = [{
                subTime:  Number(new Date()),
