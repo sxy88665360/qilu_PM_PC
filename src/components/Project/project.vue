@@ -232,7 +232,7 @@
     },
     mounted: function () {
       this.searchList();
-      localStorage.setItem("itemData",null);
+      sessionStorage.setItem("itemData",null);
     },
     methods: {
       subLog(row){
@@ -264,11 +264,11 @@
         this.$router.push({
           path: '/projectApplication',
         })
-        data.subPro = "1";
+        data.subPro = "1";  // 查看编辑
         let subData = data
         //console.log(data, "data");
         // console.log(JSON.parse(JSON.stringify(subData)), "JSON.parse(JSON.stringify(subData))");
-        localStorage.setItem("itemData", JSON.stringify(subData));
+        sessionStorage.setItem("itemData", JSON.stringify(subData));
       },
       searchList() {
         let data = this.searchCondition
@@ -321,13 +321,13 @@
         }
       },
       projectSchedule(data) {
-        data.subPro = "2";
+        data.subPro = "2"; // 提交进度
         this.$router.push({
           path: '/projectApplication'
         })
         //console.log(data, "projectScheduleData");
         //console.log(JSON.parse(JSON.stringify(data)), "JSON.parse(JSON.stringify(data))");
-        localStorage.setItem("itemData", JSON.stringify(data));
+        sessionStorage.setItem("itemData", JSON.stringify(data));
 
       }
     }

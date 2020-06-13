@@ -6,7 +6,7 @@
     <div class='content'>
       <div class="showInfo" v-if="!itemData||itemData.subPro==='1'">
         <div class='formList' >
-          <span class='text'>{{isProject ? "项目名称" : '事项名称'}}</span>
+          <span class='text'>{{isProject ? "项目名称：" : '事项名称：'}}</span>
           <el-input v-model='projectForm.name' class='listStyle' size='small' placeholder='请输入项目名称' v-bind:disabled="isView" ></el-input>
         </div>
         <div class='formList' v-if="isProject">
@@ -14,8 +14,8 @@
           <el-input v-model='projectForm.number' class='listStyle' size='small' placeholder='请输入项目编号' v-bind:disabled="isView"></el-input>
         </div>
         <div class='formList'>
-          <span class='text'>{{isProject ? "项目状态" : '事项状态'}}</span>
-          <el-select v-model='projectForm.projectStatus' placeholder='项目状态' size='small'>
+          <span class='text'>{{isProject ? "项目状态：" : '事项状态：'}}</span>
+          <el-select v-model='projectForm.projectStatus' placeholder='项目状态' size='small' @change="monitorStatus">
             <el-option v-for='item in projectStatus' :key='item.value' :label='item.label' :value='item.value'>
             </el-option>
           </el-select>
@@ -25,7 +25,7 @@
           <el-input v-model='projectForm.prize' class='listStyle' size='small' ></el-input>
         </div>
         <div class='formList' >
-          <span class='text'>立项部门：</span>
+          <span class='text'>{{isProject ? "立项部门：" : '事项状态：'}}</span>
           <treeselect v-model='department' class='listStyle' :multiple='true' :options='options' placeholder='请输入立项部门' v-bind:disabled="isView"/>
         </div>
         <div class='formList'  v-if="isProject">
@@ -47,13 +47,13 @@
           <el-input v-model='projectForm.expectedReturn' class='listStyle' size='small' placeholder='请输入预期收益'></el-input>
         </div>
         <div class='formList'>
-          <span class='text'>项目背景：</span>
+          <span class='text'>{{isProject ? "项目背景：" : '事项背景：'}}</span>
           <el-input v-model='projectForm.backGround' class='listStyle' size='small' placeholder='请输入项目背景' 
           type="textarea" :rows="4" @change="valueChange"></el-input>
         </div>
         <div class='formList'>
-          <span class='text'>项目目标：</span>
-          <el-input v-model='projectForm.target' class='listStyle' size='small' placeholder='请输入项目目标'
+          <span class='text'>{{isProject ? "项目目标：" : '事项目标：'}}</span>
+          <el-input v-model='projectForm.target' class='listStyle' size='small' placeholder='请输入目标'
           type="textarea" :rows="5"></el-input>
         </div>
         <div class='formList'>
@@ -61,7 +61,7 @@
           <el-date-picker v-model="projectForm.planTime" class='listStyle' type="date" placeholder="选择日期" value-format="timestamp" v-bind:disabled="isView"> </el-date-picker>
         </div>
         <div class='formList'>
-          <span class='text'>项目经理：</span>
+          <span class='text'>{{isProject ? "项目经理：" : '事项负责人：'}}</span>
           <el-input v-model='projectForm.manager' class='listStyle' size='small' placeholder='请输入项目经理' v-bind:disabled="isView"></el-input>
         </div>
         <div class='formList'  v-if="isProject">
@@ -259,6 +259,7 @@
     },
     data() {
       return {
+        projectEnd: false, // 项目是否完成
         isProject: true,
         eventType: '1', // 事项类型
         itemData:null,
@@ -408,24 +409,24 @@
         ],
         projectStatus: [{
             value: '1',
-            label: '已完成项目'
+            label: '已完成'
           },{
             value: '2',
-            label: '已奖励项目'
+            label: '已奖励'
           },{
             value: '3',
             label: '正在进行'
           },
           {
             value: '4',
-            label: '异常项目'
+            label: '异常'
           },
           {
             value: '5',
-            label: '暂停项目'
+            label: '暂停'
           },{
              value: '6',
-            label: '失败项目'
+            label: '失败'
           },
           
         ],
@@ -433,13 +434,13 @@
     },
     mounted() {
       console.log(this.eventType,"mounted");
-      let msg = this.itemData = JSON.parse(localStorage.getItem('itemData'));
+      let msg = this.itemData = JSON.parse(sessionStorage.getItem('itemData'));
       // console.log(this.itemData,"itemData");
       if(this.itemData) {
         if ( this.itemData.subPro === "1" || this.itemData.subPro ==="2") {
           this.isView = true;
           //this.projectForm  = this.$route.query.itemData;
-          this.projectForm  = JSON.parse(localStorage.getItem('itemData'));
+          this.projectForm  = JSON.parse(sessionStorage.getItem('itemData'));
           console.log(this.projectForm,'处于编辑状态');
           let depArr = [];
           depArr.push(this.itemData.department);
@@ -455,6 +456,10 @@
       }
     },
     methods: {
+      monitorStatus(value) { // 监测事项状态
+        console.log(value);
+        if(value == '1') this.projectEnd = true
+      },
       judge() {
         console.log(this.eventType,"this.eventType ")
         this.eventType = sessionStorage.getItem("eventType")
@@ -574,7 +579,7 @@
         this.$router.push({
           path: '/'
         }) // 返回首页
-         localStorage.setItem("itemData",null);
+         sessionStorage.setItem("itemData",null);
       },
       addProjectList() {
         let that = this
@@ -632,7 +637,7 @@
                 that.$router.push({
                   path: '/'
                 }) // 返回首页
-                localStorage.setItem("itemData", JSON.stringify(data));
+                sessionStorage.setItem("itemData", JSON.stringify(data));
               }
              
             }
@@ -640,7 +645,7 @@
           .catch(err => {
             console.log(err)
           })
-          localStorage.setItem("itemData",null);
+          sessionStorage.setItem("itemData",null);
       },
       addProgress() {
         // this.isAddprogress = !this.isAddprogress

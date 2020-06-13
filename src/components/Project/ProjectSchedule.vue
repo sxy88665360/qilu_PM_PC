@@ -167,7 +167,7 @@ export default {
     }
   },
   mounted(){
-    let itemData = JSON.parse(localStorage.getItem('itemData'));
+    let itemData = JSON.parse(sessionStorage.getItem('itemData'));
     if (itemData.subPro === "2") {
         this.isView = true
          this.progressList  = itemData.progress;
