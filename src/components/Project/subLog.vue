@@ -10,7 +10,7 @@
         </div>
         <div class="content">
              <div class="block">
-              <el-timeline :reverse='true'>
+              <el-timeline :reverse = "reverce">
                 <el-timeline-item :timestamp="formatterTime(data.subTime)" v-for="(data, index) in dataList" placement="top" :key="index" >
                   <el-card>
                     <h4>{{data.subPro}}</h4>
@@ -29,40 +29,8 @@ import moment from 'moment'
 export default {
     data() {
       return {
-        dataList:[
-          {
-            subTime:1122222220,
-            subPro:"新增"
-          },
-          {
-            subTime:1222222221,
-            subPro:"新增2"
-          },
-          {
-            subTime:1322222222,
-            subPro:"新增3"
-          },
-          {
-            subTime:1422222223,
-            subPro:"新增4"
-          },
-          {
-            subTime:1522222224,
-            subPro:"新增2"
-          },
-          {
-            subTime:1622222225,
-            subPro:"新增2"
-          },
-          {
-            subTime:1722222226,
-            subPro:"新增2"
-          },
-          {
-            subTime:1822222227,
-            subPro:"新增2"
-          }
-        ]
+        reverse:true,
+        dataList:[]
       }
     },
     mounted(){

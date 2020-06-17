@@ -10,6 +10,13 @@
         </div>
         <div class="searchItem">
           <div class="searchInput">
+            <el-select v-model="searchCondition.matterType" placeholder="督办类型" clearable @change="searchList">
+              <el-option v-for="item in matterType" :key="item.value" :label="item.label" :value="item.value" ></el-option>
+            </el-select>
+          </div>
+        </div>
+        <div class="searchItem">
+          <div class="searchInput">
             <el-input v-model="searchCondition.name"  placeholder="事项名称"></el-input>
           </div>
         </div>
@@ -37,6 +44,7 @@
     <div class="tableList">
       <el-table :data="tableData" border style="width: 100%">
         <el-table-column fixed type="index" label="序号" align="center" width="100"></el-table-column>
+        <el-table-column prop="mattterType" label="督办类型" align="center" width="120" :formatter="formatterType"></el-table-column>
         <el-table-column prop="name" label="事项描述" ></el-table-column>
         <!-- <el-table-column prop="real_progress" label="实时进度" ></el-table-column> -->
         <!-- <el-table-column prop="plan_progress" label="计划进度" ></el-table-column> -->
@@ -47,7 +55,7 @@
           <template slot-scope="scope">
             <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
             <el-button @click="projectSchedule(scope.row)" type="text" size="small">提交进度</el-button>
-            <el-button type="text" size="small">编辑</el-button>
+            <!-- <el-button type="text" size="small">编辑</el-button> -->
           </template>
         </el-table-column>
       </el-table>
@@ -70,7 +78,19 @@ export default {
       pageSize:10,
       currentPage:1,
       department: null,
-      tableData:{},
+      tableData:[],
+      matterType:[
+          {
+            value: '1',
+            label: '攻关课题'
+          }, {
+            value: '2',
+            label: '会议督办'
+          },{
+             value: '3',
+            label: '管理提升'
+          }
+      ],
       searchCondition:{ // 搜索列表
          number: '', // 项目编号
          name: '', // 项目名称
@@ -89,105 +109,113 @@ export default {
           }
         ],
       statusValue: '', // 状态值
-      options: [{
-        id: '1',
-        label: '生产部',
-        children: [{
-            id: '1_1',
-            parentId: '1',
-            label: '101车间'
+     options: [{
+            id: '1',
+            label: '生产部',
+            children: [{
+                id: '1_1',
+                parentId: '1',
+                label: '101车间'
+              },
+              {
+                id: '1_2',
+                parentId: '1',
+                label: '102车间'
+              },
+              {
+                id: '1_3',
+                parentId: '1',
+                label: '104车间'
+              },
+              {
+                id: '1_4',
+                parentId: '1',
+                label: '201车间'
+              },
+              {
+                id: '1_5',
+                parentId: '1',
+                label: '401车间'
+              },
+              {
+                id: '1_6',
+                parentId: '1',
+                label: '402车间'
+              },
+              {
+                id: '1_7',
+                parentId: '1',
+                label: '仓库'
+              },
+            ]
           },
           {
-            id: '1_2',
-            parentId: '1',
-            label: '102车间'
+            id: '2',
+            parentId: 2,
+            label: '设备动力部',
+            children: [{
+                id: '2_1',
+                parentId: 2,
+                label: '设备处'
+              },
+              {
+                id: '2_2',
+                parentId: 2,
+                label: '自控仪表中心'
+              }, {
+                id: '2_3',
+                parentId: 2,
+                label: '计量中心'
+              },{
+                id: '2_4',
+                parentId: 2,
+                label: '技术服务中心'
+              },{
+                id: '2_5',
+                parentId: 2,
+                label: '动力车间'
+              }
+            ]
           },
           {
-            id: '1_3',
-            parentId: '1',
-            label: '104车间'
+            id: '3',
+            label: '质量系统',
+            children: [{
+                id: '3_1',
+                parentId: '3',
+                label: 'QA'
+              },
+              {
+                id: '3_2',
+                parentId: '3',
+                label: 'QC'
+              }
+            ]
+          }, 
+          {
+            id: '4',
+            parentId: null,
+            label: '技术部'
           },
           {
-            id: '1_4',
-            parentId: '1',
-            label: '201车间'
+            id: '5',
+            parentId: null,
+            label: 'SHE'
           },
           {
-            id: '1_5',
-            parentId: '1',
-            label: '401车间'
-          },
-          {
-            id: '1_6',
-            parentId: '1',
-            label: '402车间'
-          },
-          {
-            id: '1_7',
-            parentId: '1',
-            label: '仓库'
-          },
-        ]
-        },
-        {
-          id: '2',
-          parentId: 2,
-          label: '设备部',
-          children: [{
-              id: '2_1',
-              parentId: 2,
-              label: '设备处'
-            },
-            {
-              id: '2_2',
-              parentId: 2,
-              label: '自控'
-            }, {
-              id: '2_3',
-              parentId: 2,
-              label: '计量'
-            }
-          ]
-        },
-        {
-          id: '3',
-          label: '质量系统',
-          children: [{
-              id: '3_1',
-              parentId: '3',
-              label: 'QA'
-            },
-            {
-              id: '3_2',
-              parentId: '3',
-              label: 'QC'
-            }
-          ]
-        }, 
-        {
-          id: '4',
-          parentId: null,
-          label: '技术部'
-        },
-        {
-          id: '5',
-          parentId: null,
-          label: 'SHE'
-        },
-        {
-          id: '6',
-          parentId: null,
-          label: '运管管理部'
-        },{
-          id: '7',
-          parentId: null,
-          label: '人力资源部'
-        },{
-          id: '8',
-          parentId:null,
-          label: '总经理办公室'
-        }
-      ]
+            id: '6',
+            parentId: null,
+            label: '运管管理部'
+          },{
+            id: '7',
+            parentId: null,
+            label: '人力资源部'
+          },{
+            id: '8',
+            parentId:null,
+            label: '总经理办公室'
+          }
+        ],
     }
   },
   mounted() {
@@ -195,18 +223,34 @@ export default {
     this.searchList();
   },
   methods: {
+    projectSchedule(data) {
+      data.subPro = "2"; // 提交进度
+      this.$router.push({
+        path: '/projectApplication'
+      })
+      //console.log(data, "projectScheduleData");
+      //console.log(JSON.parse(JSON.stringify(data)), "JSON.parse(JSON.stringify(data))");
+      sessionStorage.setItem("itemData", JSON.stringify(data));
+    },
     handleClick(data) { // 查看事项
+    let subData = data
       this.$router.push({
         path: '/projectApplication',
       })
-      data.subPro = "1";
-      let subData = data
+      subData.subPro = "1";
+      
       //console.log(data, "data");
       // console.log(JSON.parse(JSON.stringify(subData)), "JSON.parse(JSON.stringify(subData))");
       sessionStorage.setItem("itemData", JSON.stringify(subData));
     },
+    formatterType(row) {
+        // console.log(row.matterType,"matterType")
+        if(row.matterType === "1") return "攻关课题"
+        if(row.matterType === "2") return "会议督办"
+        if(row.matterType === "3") return "管理提升"
+    },
     formatterPlanTime(row){
-        let time = row.formatterPlanTime
+        let time = row.planTime
         if(time){
           return moment(time).format('YYYY-MM-DD');
         }
@@ -218,21 +262,20 @@ export default {
         }
       },
     searchList() {
-      let data = this.searchCondition
-      data.department = this.department
-      // console.log(data,"搜索条件");
+      let searchData = this.searchCondition
+      searchData.department = this.department
+      // console.log(searchData,"搜索条件");
       let that = this
       this.axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
       this.axios
       .post(
         this.dataUrl +
-        `/projectApi/findAll?pageSize=${this.pageSize}&&pageNun=${this.currentPage}`,
-        data
-      )
+        `/projectApi/findAll?pageSize=${this.pageSize}&&pageNun=${this.currentPage}`, searchData)
       .then((response) => {
         if (response.data.code === 1) {
-          let data = response.data.data
-          that.tableData = data
+          // let data = 
+          console.log(response.data,"response.data");
+          that.tableData = response.data.data
           console.log(that.tableData);
           // data.forEach((item,index) => {
           //   data[index].numberAuto = item.number.split('-').join('').slice(2);

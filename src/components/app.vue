@@ -127,7 +127,28 @@ export default {
               img: "jlsz01",
               imgActive: "jlsz02",
               subList: []
-            }
+            },
+            {
+              name: "攻关课题",
+              route: "/projectApplication",
+              img: "jlsz01",
+              imgActive: "jlsz02",
+              subList: []
+            },
+            {
+              name: "会议督办",
+              route: "/projectApplication",
+              img: "jlsz01",
+              imgActive: "jlsz02",
+              subList: []
+            },
+            {
+              name: "管理提升",
+              route: "/projectApplication",
+              img: "jlsz01",
+              imgActive: "jlsz02",
+              subList: []
+            },
           ]
         },{
           name: "事项提醒",

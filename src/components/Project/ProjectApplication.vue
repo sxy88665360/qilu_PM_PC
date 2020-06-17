@@ -5,6 +5,22 @@
     </div>
     <div class='content'>
       <div class="showInfo" v-if="!itemData||itemData.subPro==='1'">
+        <div class='formList' v-if="!isProject">
+          <span class='text'>督办类型</span>
+          <el-select v-model="projectForm.matterType" placeholder="督办类型">
+            <el-option v-for="item in matterType" :key="item.value" :label="item.label" :value="item.value" ></el-option>
+          </el-select>
+        </div>
+        <div class='formList'  v-if="!isProject">
+          <span class='text'>创建时间</span>
+          <el-date-picker
+            v-model="projectForm.creatTime"
+            type="date"
+            value-format='timestamp'
+            placeholder="选择日期">
+          </el-date-picker>
+          <!-- <el-input v-model='projectForm.name' class='listStyle' size='small' placeholder='请输入项目名称' v-bind:disabled="isView" ></el-input> -->
+        </div>
         <div class='formList' >
           <span class='text'>{{isProject ? "项目名称：" : '事项名称：'}}</span>
           <el-input v-model='projectForm.name' class='listStyle' size='small' placeholder='请输入项目名称' v-bind:disabled="isView" ></el-input>
@@ -25,7 +41,7 @@
           <el-input v-model='projectForm.prize' class='listStyle' size='small' ></el-input>
         </div>
         <div class='formList' >
-          <span class='text'>{{isProject ? "立项部门：" : '事项状态：'}}</span>
+          <span class='text'>{{isProject ? "立项部门：" : '责任部门'}}</span>
           <treeselect v-model='department' class='listStyle' :multiple='true' :options='options' placeholder='请输入立项部门' v-bind:disabled="isView"/>
         </div>
         <div class='formList'  v-if="isProject">
@@ -194,18 +210,18 @@
                 </div>
               </el-form-item>
             </div>
-
             <div class="orderName orderModityPublic" v-if="isDelay" >
               <el-form-item label="延期原因" prop="unDoneReason">
                 <div class="orderInput">
-                  <el-input type="textarea" v-model="proForm.unDoneReason" rows="1"></el-input>
+                  <el-input type="textarea" v-model="proForm.unDoneReason" rows="2"></el-input>
                 </div>
               </el-form-item>
             </div>
-             <div class="orderName orderModityPublic" v-if="proForm.isEnd ==='2'&&proForm.isStart=='1'">
+             <!-- <div class="orderName orderModityPublic" v-if="proForm.isEnd ==='2'&&proForm.isStart=='1'"> -->
+            <div class="orderName orderModityPublic" >
               <el-form-item label="事项进展" prop="process">
                 <div class="orderInput">
-                  <el-input type="textarea" v-model="proForm.process" rows="1"></el-input>
+                  <el-input type="textarea" v-model="proForm.process" rows="3"></el-input>
                 </div>
               </el-form-item>
             </div>
@@ -259,6 +275,18 @@
     },
     data() {
       return {
+        matterType:[
+          {
+            value: '1',
+            label: '攻关课题'
+          }, {
+            value: '2',
+            label: '会议督办'
+          },{
+             value: '3',
+            label: '管理提升'
+          }
+        ],
         projectEnd: false, // 项目是否完成
         isProject: true,
         eventType: '1', // 事项类型
@@ -307,6 +335,7 @@
           proposer: '', // 申请人
           projectStatus: "", // 项目状态
           prize: null, // 奖励金额
+          statusValue: '' //督办类型
         },
         options: [{
             id: '1',
@@ -351,7 +380,7 @@
           {
             id: '2',
             parentId: 2,
-            label: '设备部',
+            label: '设备动力部',
             children: [{
                 id: '2_1',
                 parentId: 2,
@@ -360,11 +389,19 @@
               {
                 id: '2_2',
                 parentId: 2,
-                label: '自控'
+                label: '自控仪表中心'
               }, {
                 id: '2_3',
                 parentId: 2,
-                label: '计量'
+                label: '计量中心'
+              },{
+                id: '2_4',
+                parentId: 2,
+                label: '技术服务中心'
+              },{
+                id: '2_5',
+                parentId: 2,
+                label: '动力车间'
               }
             ]
           },
@@ -461,7 +498,7 @@
         if(value == '1') this.projectEnd = true
       },
       judge() {
-        console.log(this.eventType,"this.eventType ")
+        console.log(this.eventType,"this.eventType")
         this.eventType = sessionStorage.getItem("eventType")
         if(this.eventType == '1'){
           //console.log('项目');
@@ -540,7 +577,6 @@
         this.proForm = value;
         this.isAddprogress = !this.isAddprogress;
         this.calculationDelay();
-        // @change="calculationDelay"
       },
       delProgress(index) {
         console.log(index,"index");
@@ -787,7 +823,6 @@
               margin: 20px auto;
               padding-left: -100px;
               position: relative;
-
               // & .el-form-item__content{
               //     transform:  translateX(30px); 
               // }
@@ -797,11 +832,9 @@
                   overflow: auto;
                 }
               }
-
               & .el-transfer-panel__footer {
                 border-top: 1px solid #CCCCCC;
               }
-
               & .el-transfer-panel {
                 width: 200px;
                 float: left;
@@ -810,13 +843,11 @@
                 border-radius: 5px;
                 height: 200px;
                 padding: 10px;
-
                 & .el-transfer-panel__header {
                   height: 30px;
                   line-height: 30px;
                   text-align: center;
                 }
-
                 & .el-transfer-panel__body {
                   & .el-input {
                     padding: 10px 10px;
@@ -824,13 +855,11 @@
                     // border-top: 1px solid #CCCCCC;
                     //border-bottom: 1px solid #CCCCCC;
                     position: relative;
-
                     & .el-input__icon {
                       position: absolute;
                       right: 10px;
                     }
                   }
-
                   & .el-transfer-panel__list {
                     height: 98px;
 
@@ -846,9 +875,7 @@
                   }
                 }
               }
-
               & .el-transfer__buttons {
-
                 position: absolute;
                 left: 295px;
                 top: 120px;
@@ -856,7 +883,6 @@
             }
           }
         }
-
         & .top {
           height: 40px;
           background: #ebf8f7;
@@ -864,14 +890,12 @@
           color: #000;
           border-radius: 5px 5px 0 0;
           border-bottom: 1px solid #CCCCCC;
-
           & .delete {
             padding-left: 22px;
             vertical-align: middle;
             color: #999;
             font-weight: bold;
           }
-
           & .close {
             vertical-align: middle;
             font-size: 25px;
@@ -880,7 +904,6 @@
             color: #999;
           }
         }
-
         & .addOrderTypeTop {
           position: absolute;
           height: 200px;
@@ -892,11 +915,10 @@
         & .orderModityPublic {
           margin-top: 5px;
           padding-left: 22px;
-          height: 48px;
-          //line-height: 50px;
-          //background: #ffffff;
           border-bottom: 1px solid #CCCCCC;
-
+          &.el-form-item {
+              margin-bottom: 10px;
+          }
           & .orderInput {
             width: 300px;
             display: inline-block;

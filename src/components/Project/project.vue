@@ -52,7 +52,7 @@
       <el-table :data='tableDataAuto' height="450" border style='width: 100%'>
         <el-table-column fixed type='index' label='序号' align='center' width='50'></el-table-column>
         <el-table-column prop='number' label='项目编号'></el-table-column>
-        <el-table-column prop='category' label='项目类别'></el-table-column>
+        <!-- <el-table-column prop='category' label='项目类别'></el-table-column> -->
         <el-table-column prop='name' label='项目名称'></el-table-column>
         <el-table-column prop='projectStatus' label='项目状态' width='120' :formatter="formatterStatus"></el-table-column>
         <el-table-column prop='planTime' label='完成期限' :formatter="formatterEndTime"></el-table-column>
@@ -170,7 +170,7 @@
           {
             id: '2',
             parentId: 2,
-            label: '设备部',
+            label: '设备动力部',
             children: [{
                 id: '2_1',
                 parentId: 2,
@@ -179,11 +179,19 @@
               {
                 id: '2_2',
                 parentId: 2,
-                label: '自控'
+                label: '自控仪表中心'
               }, {
                 id: '2_3',
                 parentId: 2,
-                label: '计量'
+                label: '计量中心'
+              },{
+                id: '2_4',
+                parentId: 2,
+                label: '技术服务中心'
+              },{
+                id: '2_5',
+                parentId: 2,
+                label: '动力车间'
               }
             ]
           },
@@ -249,7 +257,8 @@
       formatterSubTime(row){
         let time = row.subTime
         if(time){
-          return moment(time).format('YYYY-MM-DD');
+          return moment(time).format('YYYY-MM-DD, h:mm:ss a');
+          //return moment(time).format('llll');
         }
       },
       formatterStatus(row){
@@ -328,7 +337,6 @@
         //console.log(data, "projectScheduleData");
         //console.log(JSON.parse(JSON.stringify(data)), "JSON.parse(JSON.stringify(data))");
         sessionStorage.setItem("itemData", JSON.stringify(data));
-
       }
     }
   }
