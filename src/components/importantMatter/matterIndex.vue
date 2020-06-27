@@ -89,6 +89,10 @@ export default {
           },{
              value: '3',
             label: '管理提升'
+          },
+          {
+             value: '4',
+            label: '一般督办'
           }
       ],
       searchCondition:{ // 搜索列表
@@ -248,6 +252,7 @@ export default {
         if(row.matterType === "1") return "攻关课题"
         if(row.matterType === "2") return "会议督办"
         if(row.matterType === "3") return "管理提升"
+        if(row.matterType === "4") return "一般督办"
     },
     formatterPlanTime(row){
         let time = row.planTime

@@ -259,6 +259,7 @@
     beforeRouteEnter(to, from, next) {
         console.log(from.path,"from");
         next(vm => {
+           // console.log(sessionStorage.setItem("eventType", vm.eventType),"lalala")
            if(from.path === '/'){
             vm.eventType = '1';
             console.log(vm.eventType,"vm.eventType");
@@ -266,7 +267,7 @@
             }else if(from.path === '/importMatter'){
               vm.eventType = '2';
             }
-            sessionStorage.setItem("eventType", vm.eventType)
+            sessionStorage.setItem("eventType", vm.eventType);
             vm.judge();
         });
     },
@@ -285,11 +286,14 @@
           },{
              value: '3',
             label: '管理提升'
+          },{
+             value: '4',
+            label: '一般督办'
           }
         ],
         projectEnd: false, // 项目是否完成
         isProject: true,
-        eventType: '1', // 事项类型
+        eventType: '', // 事项类型
         itemData:null,
         isDelay:false,
         editList:false,
@@ -470,7 +474,6 @@
       }
     },
     mounted() {
-      console.log(this.eventType,"mounted");
       let msg = this.itemData = JSON.parse(sessionStorage.getItem('itemData'));
       // console.log(this.itemData,"itemData");
       if(this.itemData) {
@@ -500,6 +503,7 @@
       judge() {
         console.log(this.eventType,"this.eventType")
         this.eventType = sessionStorage.getItem("eventType")
+        console.log(this.eventType,"this.eventType")
         if(this.eventType == '1'){
           //console.log('项目');
           this.isProject = true;
@@ -510,7 +514,8 @@
       },
       subLog(data){
         // console.log(data);
-        this.$router.push({path:'/subLog',query:{dataList:data.subLog}})
+       this.$router.push({path:'/subLog',query:{dataList:data.subLog}});
+
       },
       valueChange(){
          console.log(this.itemData,"this.itemData");
@@ -523,13 +528,14 @@
           this.proForm.realStartTime = null
           this.proForm.realEndTime = null
         }
-        if(Number(this.proForm.realStartTime) > Number(this.proForm.startTime)) {
+        // if(Number(this.proForm.realStartTime) > Number(this.proForm.startTime)) {
+        //   this.isDelay = true;
+        //   console.log(Number(this.proForm.realStartTime),Number(this.proForm.startTime),"开始时间yanqi")
+        // }
+        // else 
+        if(Number(this.proForm.realEndTime) > Number(this.proForm.endTime)){
           this.isDelay = true;
-          //console.log(Number(this.proForm.realStartTime),Number(this.proForm.startTime),"开始时间yanqi")
-        }
-        else if(Number(this.proForm.realEndTime) > Number(this.proForm.endTime)){
-          this.isDelay = true;
-          //console.log(Number(this.proForm.realEndTime),Number(this.proForm.endTime),"完成时间yanqi")
+          console.log(Number(this.proForm.realEndTime),Number(this.proForm.endTime),"完成时间yanqi")
         }
         else if((Date.parse(new Date()) > Number(this.proForm.endTime))){ // 截止当前未完成
           this.isDelay = true;
@@ -569,7 +575,7 @@
         }
       },
       formatterIsEnd (row) {
-        if (row.isEnd === "1")return "是"
+        if (row.isEnd === "1") return "是"
         if (row.isEnd === "2") return "否"
       },
       editProgress (value) {
@@ -637,25 +643,31 @@
         if(this.isView){
            this.dbUrl = '/projectApi/edit'
            data.eventType = this.eventType
+           console.log(this.eventType,"修改数据")
            data.department = this.department[0];
+           this.submit(this.dataUrl + this.dbUrl, data)
           // console.log(JSON.stringify(data) ,"data");
-
         }
         else {
            this.dbUrl = '/projectApi/new'
            data.department = this.department[0];
-           data.eventType = this.eventType
+           data.eventType = this.eventType;
            data.progress.forEach((item,index)=>{
              item.subLog = [{
                subTime:  Number(new Date()),
                subPro: item.process ? item.process:'新增'
              }]
            })
+           this.submit(this.dataUrl + this.dbUrl, data)
         }
-        console.log(data,"data");
-        console.log(JSON.stringify(data),"JSON.stringify");
+        //console.log(JSON.stringify(data),"JSON.stringify");
         // 提交判断
-        this.axios.post(this.dataUrl + this.dbUrl, data)
+        
+      },
+      submit(url,data){
+        let that = this        
+        console.log(data,"data");
+        this.axios.post(url, data)
           .then(response => {
             if (response.data.code === 1) {
               // element 弹出
@@ -803,7 +815,8 @@
         font-size: 14px;
         color: #999999;
         border-radius: 5px;
-
+        max-height: 630px;
+        overflow: auto;
         .inner {
           & .innerBottom {
             // height: 270px;
@@ -947,13 +960,11 @@
         & .orderModityPublicBtn {
           border-top: 1px solid #ccc;
           padding-top: 10px;
-
           & .chooseTrue {
             margin: 0 64px 10px 230px;
           }
         }
       }
-
     }
   }
 </style>
