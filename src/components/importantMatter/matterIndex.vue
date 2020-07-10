@@ -27,7 +27,7 @@
         </div>
         <div class="searchItem">
           <div class="searchInput">
-            <el-select v-model="statusValue" placeholder="进行状态选择">
+            <el-select v-model="searchCondition.projectStatus" placeholder="进行状态选择">
               <el-option v-for="item in statusItem" :key="item.value" :label="item.label" :value="item.value" ></el-option>
             </el-select>
           </div>

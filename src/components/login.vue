@@ -1,6 +1,6 @@
 <template>
   <div class="loginBox">
-    <img src="/static/assets/loginlogo.png" class="logo" />
+    <!-- <img src="/static/assets/loginlogo.png" class="logo" /> -->
     <div class="login-form">
       <div class="userName">
         <label>账号</label>
