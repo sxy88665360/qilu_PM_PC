@@ -65,7 +65,7 @@
         <el-table-column fixed='right' label='操作' width='200'>
           <template slot-scope='scope'>
             <el-button @click='handleClick(scope.row)' type='text' size='small'>查看/编辑</el-button>
-            <el-button @click='projectSchedule(scope.row)' type='text' size='small'>提交进度</el-button>
+            <!-- <el-button @click='projectSchedule(scope.row)' type='text' size='small'>提交进度</el-button> -->
             <!-- <el-button @click='subLog(scope.row)' type='text' size='small'>提交记录</el-button> -->
             <!-- <el-button type='text' size='small'>编辑(暂无)</el-button> -->
           </template>

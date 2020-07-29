@@ -217,7 +217,14 @@
                 </div>
               </el-form-item>
             </div>
-             <!-- <div class="orderName orderModityPublic" v-if="proForm.isEnd ==='2'&&proForm.isStart=='1'"> -->
+            <div class="orderName orderModityPublic">
+              <el-form-item label="提交时间" prop="submitTime">
+                <div class="orderInput">
+                  <el-date-picker v-model="proForm.submitTime" type="date" placeholder="选择日期" value-format="timestamp" @change="calculationDelay">
+                  </el-date-picker>
+                </div>
+              </el-form-item>
+            </div>
             <div class="orderName orderModityPublic" >
               <el-form-item label="事项进展" prop="process">
                 <div class="orderInput">
@@ -225,7 +232,6 @@
                 </div>
               </el-form-item>
             </div>
-            <!-- <div class="orderName orderModityPublic" v-if="proForm.isEnd ==='2'&& proForm.isStart=='1'"> -->
             <div class="innerBottom">
               <!-- <el-form-item  prop="loginNameChoose">
                       <el-transfer
@@ -309,7 +315,8 @@
           isEnd: '',
           isStart:'',
           process:'',
-          unDoneReason:''
+          unDoneReason:'',
+          submitTime:null //提交时间
         },
         proRules: {},
         progressList: [],
@@ -515,7 +522,6 @@
       subLog(data){
         // console.log(data);
        this.$router.push({path:'/subLog',query:{dataList:data.subLog}});
-
       },
       valueChange(){
          console.log(this.itemData,"this.itemData");
@@ -528,11 +534,11 @@
           this.proForm.realStartTime = null
           this.proForm.realEndTime = null
         }
-        // if(Number(this.proForm.realStartTime) > Number(this.proForm.startTime)) {
-        //   this.isDelay = true;
-        //   console.log(Number(this.proForm.realStartTime),Number(this.proForm.startTime),"开始时间yanqi")
-        // }
-        // else 
+        if(Number(this.proForm.realStartTime) > Number(this.proForm.startTime)) { 
+          this.isDelay = true;
+          console.log(Number(this.proForm.realStartTime),Number(this.proForm.startTime),"开始时间yanqi")
+        }
+        else 
         if(Number(this.proForm.realEndTime) > Number(this.proForm.endTime)){
           this.isDelay = true;
           console.log(Number(this.proForm.realEndTime),Number(this.proForm.endTime),"完成时间yanqi")
@@ -665,13 +671,11 @@
         
       },
       submit(url,data){
-        let that = this        
+        let that = this
         console.log(data,"data");
         this.axios.post(url, data)
           .then(response => {
             if (response.data.code === 1) {
-              // element 弹出
-              // 跳转页面
               if(that.isView){
                 that.$message({
                   message: '项目修改成功',
@@ -687,7 +691,6 @@
                 }) // 返回首页
                 sessionStorage.setItem("itemData", JSON.stringify(data));
               }
-             
             }
           })
           .catch(err => {
@@ -697,13 +700,13 @@
       },
       addProgress() {
         // this.isAddprogress = !this.isAddprogress
-        // this.$router.push({ path: '/progress' }) // 
-        ///this.isEdit = false;
+        // this.$router.push({ path: '/progress' }) //
+        // this.isEdit = false;
         this.editList = false;
-        this.isAddprogress = !this.isAddprogress;
+        this.isAddprogress = !this.isAddprogress
       },
       resetForm() {
-        this.isAddprogress = !this.isAddprogress;
+        this.isAddprogress = !this.isAddprogress
         this.proForm = {}
       },
       cancel() {

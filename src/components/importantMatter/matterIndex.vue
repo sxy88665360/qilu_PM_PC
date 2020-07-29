@@ -48,6 +48,7 @@
         <el-table-column prop="name" label="事项描述" ></el-table-column>
         <!-- <el-table-column prop="real_progress" label="实时进度" ></el-table-column> -->
         <!-- <el-table-column prop="plan_progress" label="计划进度" ></el-table-column> -->
+        <el-table-column prop="projectStatus" label='事项状态'  :formatter="formatterStatus"></el-table-column>
         <el-table-column prop="planTime" label="计划完成时间"  :formatter="formatterPlanTime"></el-table-column>
         <el-table-column prop="real_time" label="完成时间" :formatter="formatterEndTime"></el-table-column>
         <el-table-column prop="manager" label="责任人"  width="120"></el-table-column>
@@ -101,7 +102,7 @@ export default {
          time: null, // 立项时间
          department: '', // 立项部门
          manager: '', // 项目经理
-         projectStatus: '3', // 项目状态
+         projectStatus: '', // 项目状态
          eventType:'2'
       },
        statusItem: [{
@@ -227,6 +228,11 @@ export default {
     this.searchList();
   },
   methods: {
+    formatterStatus (row) {
+       let status = row.projectStatus
+       if(status === '1') return '已完成'
+       if(status === '3') return '正在进行'
+    },
     projectSchedule(data) {
       data.subPro = "2"; // 提交进度
       this.$router.push({
