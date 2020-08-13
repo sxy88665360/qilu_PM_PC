@@ -10,9 +10,9 @@
         </div>
         <div class="content">
              <div class="block">
-              <el-timeline>
-                <el-timeline-item :timestamp="formatterTime(data.subTime)" v-for="(data, index) in dataList" placement="top" :key="index">
-                  <el-card>
+              <el-timeline :reverse="reverse">
+                <el-timeline-item :timestamp="formatterTime(data.subTime)" v-for="(data, index) in logList" placement="top" :key="index" >
+                  <el-card >
                     <h4>{{data.subPro}}</h4>
                     <!-- <p>王小虎 提交于{{formatterTime(data.subTime)}}</p> -->
                   </el-card>
@@ -27,6 +27,10 @@
 <script>
 import moment from 'moment'
 export default {
+   props:['logList'],
+    // props:{
+    //   isShow:{type: Boolean}
+    // },
     data() {
       return {
         reverse:true,
@@ -35,6 +39,7 @@ export default {
     },
     mounted(){
     // console.log();
+    // let reqData = this.$route.query.dataList
     let reqData = this.$route.query.dataList
     let resData = []
     reqData.forEach((item, index)=>{

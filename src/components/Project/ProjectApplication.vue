@@ -1,5 +1,8 @@
 <template>
   <div class='projectApplication'>
+    <div class="showLog" v-if="isShow">
+      <SubLogTD v-bind:logList="LogList"> </SubLogTD>
+    </div>
     <div class="header">
       <div class="title">{{isView?'查看':'新增'}}</div>
     </div>
@@ -256,12 +259,16 @@
   </div>
 </template>
 <script>
+  import SubLogTD from './SubLog'
   import Treeselect from '@riophae/vue-treeselect'
-  // import the styles
-  import moment from 'moment'
   import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+  import moment from 'moment' // import the styles
   import * as Urls from '@/components/url'
   export default {
+    components: { // 引入组件
+      Treeselect,
+      SubLogTD
+    },
     beforeRouteEnter(to, from, next) {
         console.log(from.path,"from");
         next(vm => {
@@ -277,11 +284,11 @@
             vm.judge();
         });
     },
-    components: {
-      Treeselect
-    },
+    
     data() {
       return {
+        LogList:[],
+        isShow: false,
         matterType:[
           {
             value: '1',
@@ -521,7 +528,9 @@
       },
       subLog(data){
         // console.log(data);
-       this.$router.push({path:'/subLog',query:{dataList:data.subLog}});
+        // this.$router.push({path:'/subLog',query:{dataList:data.subLog}});
+        this.isShow = true;
+        this.LogList = data.subLog
       },
       valueChange(){
          console.log(this.itemData,"this.itemData");
