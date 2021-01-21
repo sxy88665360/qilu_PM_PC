@@ -4,35 +4,17 @@
       <div class="boom">
         <div class="header">
           <div class="title">
-            日志记录
+            <i class="text">日志记录</i>
+            <i class="el-icon-circle-close closeBtn" @click="closeMask"></i>
           </div>
         </div>
         <div class="content">
-            <!-- <div class="listTD">
-              <el-table :data="dataList" border style="width: 100%" :default-sort = "{prop: 'supTime'}">
-                <el-table-column
-                  prop="subTime"
-                  align="center"
-                  width="180"
-                  :formatter="formatterTime"
-                  label="提交时间">
-                </el-table-column>
-                <el-table-column
-                  prop="subPro"
-                  align="center"
-                  :formatter="formatterTime"
-                  label='事项进展'>
-                </el-table-column>
-               
-              </el-table>
-              
-            </div> -->
              <div class="block">
-              <el-timeline>
-                <el-timeline-item timestamp="data.subTime" valid-v-for="(data, index) in dataList" placement="top" >
-                  <el-card>
+              <el-timeline :reverse="reverse">
+                <el-timeline-item :timestamp="formatterTime(data.subTime)" v-for="(data, index) in logList" placement="top" :key="index" >
+                  <el-card >
                     <h4>{{data.subPro}}</h4>
-                    <p>{{data.subPro}}</p>
+                    <!-- <p>王小虎 提交于{{formatterTime(data.subTime)}}</p> -->
                   </el-card>
                 </el-timeline-item>
               </el-timeline>
@@ -43,26 +25,35 @@
   </div>
 </template>
 <script>
-
+import moment from 'moment'
 export default {
+   props:['logList'],
+    // props:{
+    //   isShow:{type: Boolean}
+    // },
     data() {
       return {
-        dataList:[
-          {
-            subTime:1591880890000,
-            subPro:'新增'
-          },{
-            subTime:1591880890000,
-            subPro:'新增2'
-          }
-        ]
+        reverse:true,
+        dataList:[]
       }
     },
-    mounted:{
-
+    mounted(){
+    // console.log();
+    // let reqData = this.$route.query.dataList
+    let reqData = this.$route.query.dataList
+    let resData = []
+    reqData.forEach((item, index)=>{
+      if(item.subPro)  resData.unshift(item)
+    })
+      this.dataList = resData;
     },
     methods:{
-
+      formatterTime(time) {
+        return moment(time).format('YYYY-MM-DD');
+      },
+      closeMask(){
+        this.$router.back()
+      }
     }
 }
 </script>
@@ -77,7 +68,7 @@ export default {
     align-items: center;
     & .boom{
       width: 100%;
-          height: calc(100% - 100px);
+          height: calc(100% - 200px);
           margin: 80px 300px 80px 300px;
           border:1px solid #ccc;
           border-radius: 4px;
@@ -87,18 +78,31 @@ export default {
     }
   }
   .header{
+   
     .title{
+     // position: relative;
       height: 40px;
       background-color: #999;
       line-height: 40px;
       font-size: 16px;
       text-align: center;
+      .text{
+        display: inline-block;
+
+      }
+      .closeBtn{
+      // position: fixed;
+      float: right;
+      margin: 10px 20px;
+      // margin-left: 500px;
     }
+    }
+   
   }
   .content{
-    .listTD{
-      margin: 10px 20px;
-    }
+    height: calc(100% - 100px);
+    margin: 30px;
+    overflow: auto;
   }
 }
 </style>

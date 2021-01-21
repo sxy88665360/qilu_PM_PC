@@ -1,21 +1,40 @@
 <template>
   <div class='projectApplication'>
+    <div class="showLog" v-if="isShow">
+      <SubLogTD v-bind:logList="LogList"> </SubLogTD>
+    </div>
     <div class="header">
-      <div class="title">{{isView?'查看项目':'项目申请——新增'}}</div>
+      <div class="title">{{isView?'查看':'新增'}}</div>
     </div>
     <div class='content'>
       <div class="showInfo" v-if="!itemData||itemData.subPro==='1'">
+        <div class='formList' v-if="!isProject">
+          <span class='text'>督办类型</span>
+          <el-select v-model="projectForm.matterType" placeholder="督办类型">
+            <el-option v-for="item in matterType" :key="item.value" :label="item.label" :value="item.value" ></el-option>
+          </el-select>
+        </div>
+        <div class='formList'  v-if="!isProject">
+          <span class='text'>创建时间</span>
+          <el-date-picker
+            v-model="projectForm.creatTime"
+            type="date"
+            value-format='timestamp'
+            placeholder="选择日期">
+          </el-date-picker>
+          <!-- <el-input v-model='projectForm.name' class='listStyle' size='small' placeholder='请输入项目名称' v-bind:disabled="isView" ></el-input> -->
+        </div>
         <div class='formList' >
-          <span class='text'>项目名称：</span>
+          <span class='text'>{{isProject ? "项目名称：" : '事项名称：'}}</span>
           <el-input v-model='projectForm.name' class='listStyle' size='small' placeholder='请输入项目名称' v-bind:disabled="isView" ></el-input>
         </div>
-        <div class='formList'>
+        <div class='formList' v-if="isProject">
           <span class='text'>项目编号：</span>
           <el-input v-model='projectForm.number' class='listStyle' size='small' placeholder='请输入项目编号' v-bind:disabled="isView"></el-input>
         </div>
         <div class='formList'>
-          <span class='text'>项目状态：</span>
-          <el-select v-model='projectForm.projectStatus' placeholder='项目状态' size='small'>
+          <span class='text'>{{isProject ? "项目状态：" : '事项状态：'}}</span>
+          <el-select v-model='projectForm.projectStatus' placeholder='项目状态' size='small' @change="monitorStatus">
             <el-option v-for='item in projectStatus' :key='item.value' :label='item.label' :value='item.value'>
             </el-option>
           </el-select>
@@ -24,11 +43,11 @@
           <span class='text'>奖励金额：</span>
           <el-input v-model='projectForm.prize' class='listStyle' size='small' ></el-input>
         </div>
-        <div class='formList'>
-          <span class='text'>立项部门：</span>
+        <div class='formList' >
+          <span class='text'>{{isProject ? "立项部门：" : '责任部门'}}</span>
           <treeselect v-model='department' class='listStyle' :multiple='true' :options='options' placeholder='请输入立项部门' v-bind:disabled="isView"/>
         </div>
-        <div class='formList'>
+        <div class='formList'  v-if="isProject">
           <span class='text'>项目类别：</span>
           <el-radio v-model='projectForm.category' label='改造项目' >改造项目</el-radio>
           <el-radio v-model='projectForm.category' label='工艺革新项目'>工艺革新项目</el-radio>
@@ -37,23 +56,23 @@
           <el-radio v-model='projectForm.category' label='专利申请'>专利申请</el-radio>
           <el-radio v-model='projectForm.category' label='其他项目'>其他项目</el-radio>
         </div>
-        <div class='formList'>
+        <div class='formList'  v-if="isProject">
           <span class='text'>计划投资总额：</span>
           <el-input v-model='projectForm.totalInvestment' class='listStyle' size='small' placeholder='请输入计划投资总额'>
           </el-input>
         </div>
-        <div class='formList'>
+        <div class='formList'  v-if="isProject">
           <span class='text'>预期收益：</span>
           <el-input v-model='projectForm.expectedReturn' class='listStyle' size='small' placeholder='请输入预期收益'></el-input>
         </div>
         <div class='formList'>
-          <span class='text'>项目背景：</span>
+          <span class='text'>{{isProject ? "项目背景：" : '事项背景：'}}</span>
           <el-input v-model='projectForm.backGround' class='listStyle' size='small' placeholder='请输入项目背景' 
           type="textarea" :rows="4" @change="valueChange"></el-input>
         </div>
         <div class='formList'>
-          <span class='text'>项目目标：</span>
-          <el-input v-model='projectForm.target' class='listStyle' size='small' placeholder='请输入项目目标'
+          <span class='text'>{{isProject ? "项目目标：" : '事项目标：'}}</span>
+          <el-input v-model='projectForm.target' class='listStyle' size='small' placeholder='请输入目标'
           type="textarea" :rows="5"></el-input>
         </div>
         <div class='formList'>
@@ -61,24 +80,24 @@
           <el-date-picker v-model="projectForm.planTime" class='listStyle' type="date" placeholder="选择日期" value-format="timestamp" v-bind:disabled="isView"> </el-date-picker>
         </div>
         <div class='formList'>
-          <span class='text'>项目经理：</span>
+          <span class='text'>{{isProject ? "项目经理：" : '事项负责人：'}}</span>
           <el-input v-model='projectForm.manager' class='listStyle' size='small' placeholder='请输入项目经理' v-bind:disabled="isView"></el-input>
         </div>
-        <div class='formList'>
+        <div class='formList'  v-if="isProject">
           <span class='text'>核心人员：</span>
           <el-input v-model='projectForm.corePersonnel' class='listStyle' size='small' placeholder='请输入核心人员' v-bind:disabled="isView"></el-input>
         </div>
-        <div class='formList'>
+        <div class='formList'  v-if="isProject">
           <span class='text'>主要人员：</span>
           <el-input v-model='projectForm.keyPersonnel' class='listStyle' size='small' placeholder='请输入主要人员' v-bind:disabled="isView"></el-input>
         </div>
-        <div class='formList'>
+        <div class='formList'  v-if="isProject">
           <span class='text'>申请人：</span>
           <el-input v-model='projectForm.proposer' class='listStyle' size='small' placeholder='请输入申请人' v-bind:disabled="isView"></el-input>
         </div>
       </div>
       <div class='formList progress'>
-        <span class='text'>项目章程：</span>
+        <span class='text'>里程碑计划：</span>
         <div class="btn">
           <el-button type='primary' size='medium' class='Btn_2' @click='addProgress'>添加分项</el-button>
         </div>
@@ -97,8 +116,9 @@
             <el-table-column prop='unDoneReason' label='延期原因'></el-table-column>
             <el-table-column fixed='right' label='操作' width='120'>
               <template slot-scope='scope'>
-                <el-button type="primary" icon="el-icon-edit" circle @click='editProgress(scope.row)'></el-button>
-                <el-button type="danger" icon="el-icon-delete" circle    @click='delProgress(scope.$index)'></el-button>
+                <el-button type="primary" icon="el-icon-edit" circle @click='editProgress(scope.row)'>编辑</el-button>
+                <el-button type="danger" icon="el-icon-delete" circle    @click='delProgress(scope.$index)'>删除</el-button>
+                <el-button type="info" icon="el-icon-message" circle    @click='subLog(scope.row)'>提交记录</el-button>
                 <!-- <el-button  type='text' size='small'>修改</el-button>
                 <el-button type='text' size='small'>删除</el-button> -->
               </template>
@@ -193,22 +213,28 @@
                 </div>
               </el-form-item>
             </div>
-
             <div class="orderName orderModityPublic" v-if="isDelay" >
               <el-form-item label="延期原因" prop="unDoneReason">
                 <div class="orderInput">
-                  <el-input type="textarea" v-model="proForm.unDoneReason" rows="1"></el-input>
+                  <el-input type="textarea" v-model="proForm.unDoneReason" rows="2"></el-input>
                 </div>
               </el-form-item>
             </div>
-             <div class="orderName orderModityPublic" v-if="proForm.isEnd ==='2'&&proForm.isStart=='1'">
+            <div class="orderName orderModityPublic">
+              <el-form-item label="提交时间" prop="submitTime">
+                <div class="orderInput">
+                  <el-date-picker v-model="proForm.submitTime" type="date" placeholder="选择日期" value-format="timestamp" @change="calculationDelay">
+                  </el-date-picker>
+                </div>
+              </el-form-item>
+            </div>
+            <div class="orderName orderModityPublic" >
               <el-form-item label="事项进展" prop="process">
                 <div class="orderInput">
-                  <el-input type="textarea" v-model="proForm.process" rows="1"></el-input>
+                  <el-input type="textarea" v-model="proForm.process" rows="3"></el-input>
                 </div>
               </el-form-item>
             </div>
-            <!-- <div class="orderName orderModityPublic" v-if="proForm.isEnd ==='2'&& proForm.isStart=='1'"> -->
             <div class="innerBottom">
               <!-- <el-form-item  prop="loginNameChoose">
                       <el-transfer
@@ -233,17 +259,54 @@
   </div>
 </template>
 <script>
+  import SubLogTD from './SubLog'
   import Treeselect from '@riophae/vue-treeselect'
-  // import the styles
-  import moment from 'moment'
   import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+  import moment from 'moment' // import the styles
   import * as Urls from '@/components/url'
   export default {
-    components: {
-      Treeselect
+    components: { // 引入组件
+      Treeselect,
+      SubLogTD
     },
+    beforeRouteEnter(to, from, next) {
+        console.log(from.path,"from");
+        next(vm => {
+           // console.log(sessionStorage.setItem("eventType", vm.eventType),"lalala")
+           if(from.path === '/'){
+            vm.eventType = '1';
+            console.log(vm.eventType,"vm.eventType");
+            // sessionStorage.setItem("eventType", vm.eventType);
+            }else if(from.path === '/importMatter'){
+              vm.eventType = '2';
+            }
+            sessionStorage.setItem("eventType", vm.eventType);
+            vm.judge();
+        });
+    },
+    
     data() {
       return {
+        LogList:[],
+        isShow: false,
+        matterType:[
+          {
+            value: '1',
+            label: '攻关课题'
+          }, {
+            value: '2',
+            label: '会议督办'
+          },{
+             value: '3',
+            label: '管理提升'
+          },{
+             value: '4',
+            label: '一般督办'
+          }
+        ],
+        projectEnd: false, // 项目是否完成
+        isProject: true,
+        eventType: '', // 事项类型
         itemData:null,
         isDelay:false,
         editList:false,
@@ -259,7 +322,8 @@
           isEnd: '',
           isStart:'',
           process:'',
-          unDoneReason:''
+          unDoneReason:'',
+          submitTime:null //提交时间
         },
         proRules: {},
         progressList: [],
@@ -289,6 +353,7 @@
           proposer: '', // 申请人
           projectStatus: "", // 项目状态
           prize: null, // 奖励金额
+          statusValue: '' //督办类型
         },
         options: [{
             id: '1',
@@ -333,7 +398,7 @@
           {
             id: '2',
             parentId: 2,
-            label: '设备部',
+            label: '设备动力部',
             children: [{
                 id: '2_1',
                 parentId: 2,
@@ -342,11 +407,19 @@
               {
                 id: '2_2',
                 parentId: 2,
-                label: '自控'
+                label: '自控仪表中心'
               }, {
                 id: '2_3',
                 parentId: 2,
-                label: '计量'
+                label: '计量中心'
+              },{
+                id: '2_4',
+                parentId: 2,
+                label: '技术服务中心'
+              },{
+                id: '2_5',
+                parentId: 2,
+                label: '动力车间'
               }
             ]
           },
@@ -391,37 +464,37 @@
         ],
         projectStatus: [{
             value: '1',
-            label: '已完成项目'
+            label: '已完成'
           },{
             value: '2',
-            label: '已奖励项目'
+            label: '已奖励'
           },{
             value: '3',
             label: '正在进行'
           },
           {
             value: '4',
-            label: '异常项目'
+            label: '异常'
           },
           {
             value: '5',
-            label: '暂停项目'
+            label: '暂停'
           },{
              value: '6',
-            label: '失败项目'
+            label: '失败'
           },
           
         ],
       }
     },
     mounted() {
-      let msg = this.itemData = JSON.parse(localStorage.getItem('itemData'));
+      let msg = this.itemData = JSON.parse(sessionStorage.getItem('itemData'));
       // console.log(this.itemData,"itemData");
       if(this.itemData) {
         if ( this.itemData.subPro === "1" || this.itemData.subPro ==="2") {
           this.isView = true;
           //this.projectForm  = this.$route.query.itemData;
-          this.projectForm  = JSON.parse(localStorage.getItem('itemData'));
+          this.projectForm  = JSON.parse(sessionStorage.getItem('itemData'));
           console.log(this.projectForm,'处于编辑状态');
           let depArr = [];
           depArr.push(this.itemData.department);
@@ -437,6 +510,28 @@
       }
     },
     methods: {
+      monitorStatus(value) { // 监测事项状态
+        console.log(value);
+        if(value == '1') this.projectEnd = true
+      },
+      judge() {
+        console.log(this.eventType,"this.eventType")
+        this.eventType = sessionStorage.getItem("eventType")
+        console.log(this.eventType,"this.eventType")
+        if(this.eventType == '1'){
+          //console.log('项目');
+          this.isProject = true;
+        }else if(this.eventType == '2') {
+          //console.log('督办')
+          this.isProject = false;
+        }
+      },
+      subLog(data){
+        // console.log(data);
+        // this.$router.push({path:'/subLog',query:{dataList:data.subLog}});
+        this.isShow = true;
+        this.LogList = data.subLog
+      },
       valueChange(){
          console.log(this.itemData,"this.itemData");
       },
@@ -448,13 +543,14 @@
           this.proForm.realStartTime = null
           this.proForm.realEndTime = null
         }
-        if(Number(this.proForm.realStartTime) > Number(this.proForm.startTime)) {
+        if(Number(this.proForm.realStartTime) > Number(this.proForm.startTime)) { 
           this.isDelay = true;
-          //console.log(Number(this.proForm.realStartTime),Number(this.proForm.startTime),"开始时间yanqi")
+          console.log(Number(this.proForm.realStartTime),Number(this.proForm.startTime),"开始时间yanqi")
         }
-        else if(Number(this.proForm.realEndTime) > Number(this.proForm.endTime)){
+        else 
+        if(Number(this.proForm.realEndTime) > Number(this.proForm.endTime)){
           this.isDelay = true;
-          //console.log(Number(this.proForm.realEndTime),Number(this.proForm.endTime),"完成时间yanqi")
+          console.log(Number(this.proForm.realEndTime),Number(this.proForm.endTime),"完成时间yanqi")
         }
         else if((Date.parse(new Date()) > Number(this.proForm.endTime))){ // 截止当前未完成
           this.isDelay = true;
@@ -494,7 +590,7 @@
         }
       },
       formatterIsEnd (row) {
-        if (row.isEnd === "1")return "是"
+        if (row.isEnd === "1") return "是"
         if (row.isEnd === "2") return "否"
       },
       editProgress (value) {
@@ -502,16 +598,15 @@
         this.proForm = value;
         this.isAddprogress = !this.isAddprogress;
         this.calculationDelay();
-        // @change="calculationDelay"
       },
       delProgress(index) {
-        console.log(index,"index")
+        console.log(index,"index");
         this.$confirm('删除该文件, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-        console.log(index,"index")
+          console.log(index,"index");
           this.projectForm.progress.splice(index, 1);
           // this.$message({
           //   type: 'success',
@@ -541,7 +636,7 @@
         this.$router.push({
           path: '/'
         }) // 返回首页
-         localStorage.setItem("itemData",null);
+         sessionStorage.setItem("itemData",null);
       },
       addProjectList() {
         let that = this
@@ -562,28 +657,34 @@
         // console.log(this.department,"this.department");
         if(this.isView){
            this.dbUrl = '/projectApi/edit'
+           data.eventType = this.eventType
+           console.log(this.eventType,"修改数据")
            data.department = this.department[0];
+           this.submit(this.dataUrl + this.dbUrl, data)
           // console.log(JSON.stringify(data) ,"data");
-
         }
         else {
            this.dbUrl = '/projectApi/new'
            data.department = this.department[0];
+           data.eventType = this.eventType;
            data.progress.forEach((item,index)=>{
              item.subLog = [{
                subTime:  Number(new Date()),
                subPro: item.process ? item.process:'新增'
              }]
            })
+           this.submit(this.dataUrl + this.dbUrl, data)
         }
-        console.log(data,"data");
-        console.log(JSON.stringify(data),"JSON.stringify");
+        //console.log(JSON.stringify(data),"JSON.stringify");
         // 提交判断
-        this.axios.post(this.dataUrl + this.dbUrl, data)
+        
+      },
+      submit(url,data){
+        let that = this
+        console.log(data,"data");
+        this.axios.post(url, data)
           .then(response => {
             if (response.data.code === 1) {
-              // element 弹出
-              // 跳转页面
               if(that.isView){
                 that.$message({
                   message: '项目修改成功',
@@ -597,25 +698,24 @@
                 that.$router.push({
                   path: '/'
                 }) // 返回首页
-                localStorage.setItem("itemData", JSON.stringify(data));
+                sessionStorage.setItem("itemData", JSON.stringify(data));
               }
-             
             }
           })
           .catch(err => {
             console.log(err)
           })
-          localStorage.setItem("itemData",null);
+          sessionStorage.setItem("itemData",null);
       },
       addProgress() {
         // this.isAddprogress = !this.isAddprogress
-        // this.$router.push({ path: '/progress' }) // 
-        ///this.isEdit = false;
+        // this.$router.push({ path: '/progress' }) //
+        // this.isEdit = false;
         this.editList = false;
-        this.isAddprogress = !this.isAddprogress;
+        this.isAddprogress = !this.isAddprogress
       },
       resetForm() {
-        this.isAddprogress = !this.isAddprogress;
+        this.isAddprogress = !this.isAddprogress
         this.proForm = {}
       },
       cancel() {
@@ -727,7 +827,8 @@
         font-size: 14px;
         color: #999999;
         border-radius: 5px;
-
+        max-height: 630px;
+        overflow: auto;
         .inner {
           & .innerBottom {
             // height: 270px;
@@ -747,7 +848,6 @@
               margin: 20px auto;
               padding-left: -100px;
               position: relative;
-
               // & .el-form-item__content{
               //     transform:  translateX(30px); 
               // }
@@ -757,11 +857,9 @@
                   overflow: auto;
                 }
               }
-
               & .el-transfer-panel__footer {
                 border-top: 1px solid #CCCCCC;
               }
-
               & .el-transfer-panel {
                 width: 200px;
                 float: left;
@@ -770,13 +868,11 @@
                 border-radius: 5px;
                 height: 200px;
                 padding: 10px;
-
                 & .el-transfer-panel__header {
                   height: 30px;
                   line-height: 30px;
                   text-align: center;
                 }
-
                 & .el-transfer-panel__body {
                   & .el-input {
                     padding: 10px 10px;
@@ -784,13 +880,11 @@
                     // border-top: 1px solid #CCCCCC;
                     //border-bottom: 1px solid #CCCCCC;
                     position: relative;
-
                     & .el-input__icon {
                       position: absolute;
                       right: 10px;
                     }
                   }
-
                   & .el-transfer-panel__list {
                     height: 98px;
 
@@ -806,9 +900,7 @@
                   }
                 }
               }
-
               & .el-transfer__buttons {
-
                 position: absolute;
                 left: 295px;
                 top: 120px;
@@ -816,7 +908,6 @@
             }
           }
         }
-
         & .top {
           height: 40px;
           background: #ebf8f7;
@@ -824,14 +915,12 @@
           color: #000;
           border-radius: 5px 5px 0 0;
           border-bottom: 1px solid #CCCCCC;
-
           & .delete {
             padding-left: 22px;
             vertical-align: middle;
             color: #999;
             font-weight: bold;
           }
-
           & .close {
             vertical-align: middle;
             font-size: 25px;
@@ -840,7 +929,6 @@
             color: #999;
           }
         }
-
         & .addOrderTypeTop {
           position: absolute;
           height: 200px;
@@ -852,11 +940,10 @@
         & .orderModityPublic {
           margin-top: 5px;
           padding-left: 22px;
-          height: 48px;
-          //line-height: 50px;
-          //background: #ffffff;
           border-bottom: 1px solid #CCCCCC;
-
+          &.el-form-item {
+              margin-bottom: 10px;
+          }
           & .orderInput {
             width: 300px;
             display: inline-block;
@@ -885,13 +972,11 @@
         & .orderModityPublicBtn {
           border-top: 1px solid #ccc;
           padding-top: 10px;
-
           & .chooseTrue {
             margin: 0 64px 10px 230px;
           }
         }
       }
-
     }
   }
 </style>

@@ -1,5 +1,6 @@
 <template>
   <div class="projectSchedule">
+   
     <header>
       <p>项目简报</p>
     </header>
@@ -157,6 +158,7 @@
 </template>
 <script>
 export default {
+  
   data () {
     return {
       projectForm:null,
@@ -167,7 +169,7 @@ export default {
     }
   },
   mounted(){
-    let itemData = JSON.parse(localStorage.getItem('itemData'));
+    let itemData = JSON.parse(sessionStorage.getItem('itemData'));
     if (itemData.subPro === "2") {
         this.isView = true
          this.progressList  = itemData.progress;
@@ -182,6 +184,7 @@ export default {
       this.$router.back();
     },
     editProgress (value) {
+        
         this.editList = true;
         this.proForm = value;
         this.isAddprogress = !this.isAddprogress;

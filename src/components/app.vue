@@ -120,7 +120,36 @@ export default {
           route: "/importMatter",
           img: "jlsz01",
           imgActive: "jlsz02",
-          subList: []
+          subList: [
+            {
+              name: "新增督办",
+              route: "/projectApplication",
+              img: "jlsz01",
+              imgActive: "jlsz02",
+              subList: []
+            },
+            {
+              name: "攻关课题",
+              route: "/projectApplication",
+              img: "jlsz01",
+              imgActive: "jlsz02",
+              subList: []
+            },
+            {
+              name: "会议督办",
+              route: "/projectApplication",
+              img: "jlsz01",
+              imgActive: "jlsz02",
+              subList: []
+            },
+            {
+              name: "管理提升",
+              route: "/projectApplication",
+              img: "jlsz01",
+              imgActive: "jlsz02",
+              subList: []
+            },
+          ]
         },{
           name: "事项提醒",
           route: "/reminder",
@@ -239,8 +268,8 @@ a {
         font-size: 16px;
         color: #fff;
       }
-      .log:hover {
-      }
+      // .log:hover {
+      // }
       // span{
       //     display: inline-block;
       //     float:right;
