@@ -28,24 +28,11 @@
               
             </div> -->
              <div class="block">
-              
               <el-timeline>
-                <el-timeline-item timestamp="data.subTime" v-for="(data, index) in dataList" placement="top" >
+                <el-timeline-item timestamp="data.subTime" valid-v-for="(data, index) in dataList" placement="top" >
                   <el-card>
                     <h4>{{data.subPro}}</h4>
-                    <p>王小虎 提交于 2018/4/12 20:46</p>
-                  </el-card>
-                </el-timeline-item>
-                <el-timeline-item timestamp="2018/4/3" placement="top">
-                  <el-card>
-                    <h4>更新 Github 模板</h4>
-                    <p>王小虎 提交于 2018/4/3 20:46</p>
-                  </el-card>
-                </el-timeline-item>
-                <el-timeline-item timestamp="2018/4/2" placement="top">
-                  <el-card>
-                    <h4>更新 Github 模板</h4>
-                    <p>王小虎 提交于 2018/4/2 20:46</p>
+                    <p>{{data.subPro}}</p>
                   </el-card>
                 </el-timeline-item>
               </el-timeline>
@@ -60,11 +47,21 @@
 export default {
     data() {
       return {
-        dataList:[]
+        dataList:[
+          {
+            subTime:1591880890000,
+            subPro:'新增'
+          },{
+            subTime:1591880890000,
+            subPro:'新增2'
+          }
+        ]
       }
     },
-    mounted:{},
-    methods(){
+    mounted:{
+
+    },
+    methods:{
 
     }
 }
